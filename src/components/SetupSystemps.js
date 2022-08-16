@@ -16,7 +16,7 @@ import AddIcon from '@mui/icons-material/Add';
 import RefreshIcon from '@mui/icons-material/Refresh';
 
 function SetupSystemps() {
-    const url = 'http://127.0.0.1:5000/api/v1/systems';
+    const url = 'https://iridologyapirest.herokuapp.com/api/SetupSystems/';
     const [open, setOpen] = useState(false);
     const [rowData, setRowData] = useState([]);
     const [rowDataEdi, setRowDataEdi] = useState([]);
@@ -45,25 +45,29 @@ function SetupSystemps() {
                                 }else{
                                     setOpen(true);
                                     setAction(rowDataEdi.id);
-                                    setFormValue({Systems:rowDataEdi.SetupSystems, RangeMax:rowDataEdi.RangeMax, RangeMin:rowDataEdi.RangeMin });
+                                    setFormValue({Systems:rowDataEdi.setupsystems, RangeMax:rowDataEdi.rangemax, RangeMin:rowDataEdi.rangemin });
                                 }
                             }
     const handleClose = () => setOpen(false);
     const [columns, setColumns] = useState([
         { field: 'id', headerName: 'ID', width: 100 },
-        { field: 'SetupSystems', headerName: 'Setup Systems', width: 350 },
-        { field: 'RangeMax', headerName: 'Range Max', width: 125 },
-        { field: 'RangeMin', headerName: 'Range Min', width: 125 },
-        { field: 'Lenguage', headerName: 'Lenguage', width: 150 },
+        { field: 'setupsystems', headerName: 'Setup Systems', width: 350 },
+        { field: 'rangemax', headerName: 'Range Max', width: 125 },
+        { field: 'rangemin', headerName: 'Range Min', width: 125 },
+        { field: 'lenguage', headerName: 'Lenguage', width: 150 },
       ]);
     
     const UpdateData = async () =>  {
-        await fetch(url)
-        .then(result => result.json())
-        .then(rowData => setRowData( JSON.parse(rowData) ) )
+        try {
+            const data = await fetch(url);
+            const data1 = await data.json();
+            setRowData(data1);
+        } catch (error) {
+           console.log(error); 
+        }
     }
     const Create = async ()=> {
-        await fetch('http://127.0.0.1:5000/api/v1/systems', {
+        await fetch('https://iridologyapirest.herokuapp.com/api/SetupSystems/add', {
             method: 'post',
             headers: {'Content-Type':'application/json'},
             body: JSON.stringify([{
@@ -83,7 +87,7 @@ function SetupSystemps() {
        });
     }
     const update = async ()=> {
-        await fetch('http://127.0.0.1:5000/api/v1/systems', {
+        await fetch('https://iridologyapirest.herokuapp.com/api/SetupSystems/update', {
             method: 'put',
             headers: {'Content-Type':'application/json'},
             body: JSON.stringify([{
@@ -104,7 +108,9 @@ function SetupSystemps() {
        });
     }
     useEffect(() => {
-        UpdateData();
+        const run = async () =>
+            await UpdateData();
+        run();
     }, []);
     
     return (
@@ -113,7 +119,7 @@ function SetupSystemps() {
                 <Button onClick={handleOpenN} variant="contained" color="success" startIcon={<AddIcon />}  > New</Button>
                 <Button onClick={handleOpenU} startIcon={<RefreshIcon />} > Update</Button>
             </ButtonGroup>
-            {rowData.length > 0 ?
+            {rowData ?
                 <DataGrid 
                     style={{ height: 550, width: '100%' }} 
                     rows={rowData} 

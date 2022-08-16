@@ -39,12 +39,12 @@ export default function NewAccountSide() {
         )
     }
     const CreateAccount = async ()=> {
-        await fetch('http://127.0.0.1:5000/api/v1/user', {
+        await fetch('https://iridologyapirest.herokuapp.com/api/user/add', {
             method: 'post',
             headers: {'Content-Type':'application/json'},
             body: JSON.stringify([{
-                "Password": md5(state.Password),
-                "TypeUser": 2,
+                "userPassword": md5(state.Password),
+                "TypeUser": 1,
                 "UserName": state.Name,
                 "UserLastName": state.LastName,
                 "UserMail": state.email,

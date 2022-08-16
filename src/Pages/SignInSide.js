@@ -39,29 +39,31 @@ export default function SignInSide() {
   }
   const iniciarSesion = async ()=> {
     //swal("Clave incorrecta");
-    await fetch('http://127.0.0.1:5000/api/v1/login', {
+    // console.log(md5(state.Password));
+    await fetch('https://iridologyapirest.herokuapp.com/api/user/login/', {
       method: 'post',
       headers: {'Content-Type':'application/json'},
       body: JSON.stringify([{
-        "User": state.User,
-        "Password": md5(state.Password)
+        "user": state.User,
+        "userPassword": md5(state.Password)
       }])
      })
     .then((response) => response.json())
     .then((responseJson) => {
-      if (responseJson['msj'] == 'Usuario no encontrado'){
-        swal(responseJson['msj']);
+      if (responseJson['msj'] == 'Accion no fue Completada'){
+        swal('Usuario no encontrado');
       }else{
-        if(responseJson[0]['Status'] == true){
-          cookies.set('IDUser', responseJson[0]['IDUser'], {path: "/"});
-          cookies.set('IDTypeUser', responseJson[0]['IDTypeUser'], {path: "/"});
-          cookies.set('UserName', responseJson[0]['UserName'], {path: "/"});
-          cookies.set('Status', responseJson[0]['Status'], {path: "/"});
-          cookies.set('User', responseJson[0]['User'], {path: "/"});
-          cookies.set('UserLenguage', responseJson[0]['UserLenguage'], {path: "/"});
-          cookies.set('UserMail', responseJson[0]['UserMail'], {path: "/"});
-          cookies.set('UserLastName', responseJson[0]['UserLastName'], {path: "/"});
-          cookies.set('UserPhone', responseJson[0]['UserPhone'], {path: "/"});
+        // console.log(responseJson);
+        if(responseJson.status == "1"){
+          cookies.set('IDUser', responseJson.idinfouser, {path: "/"});
+          cookies.set('IDTypeUser', responseJson.idtypeuser, {path: "/"});
+          cookies.set('UserName', responseJson.username, {path: "/"});
+          cookies.set('Status', responseJson.status, {path: "/"});
+          cookies.set('User', responseJson.User, {path: "/"});
+          cookies.set('UserLenguage', responseJson.userlenguage, {path: "/"});
+          cookies.set('UserMail', responseJson.usermail, {path: "/"});
+          cookies.set('UserLastName', responseJson.userlastname, {path: "/"});
+          cookies.set('UserPhone', responseJson.userphone, {path: "/"});
           navigate('/Main');
         }else{
           swal("El usuario no esta activo")
