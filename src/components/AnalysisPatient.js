@@ -22,28 +22,33 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 import swal from 'sweetalert';
 import Cookies from 'universal-cookie';
 const cookies = new Cookies();
+const fecha = new Date();
 
 function SetupFindings() {
     // EN ESTE BLOQUE ESTA TODA LAS VARIABLES REQUERIDAS
     const [rowDataEdi, setRowDataEdi] = useState([]);
     const [open, setOpen] = useState(false);
     const [table, setTable] = useState();
-    const [formValue , setFormValue] = useState({
-        IDPatient : 0,
-        IDUser : 0,
-        PatientName : "",
-        PatientLastName : "",
-        BirthDate : false,
-        Gender : ""
-    })
-    const url = 'http://127.0.0.1:5000/api/v1/analysispatient';
+
+    const [IDPatient, setIDPatient] = useState();
+    const [IDUser, setIDUser] = useState();
+    const [PatientName, setPatientName] = useState();
+    const [PatientLastName, setPatientLastName] = useState();
+    const [BirthDate, setBirthDate] = useState();
+    const [Gender, setGender] = useState();
+    const [Weight, setWeight] = useState();
+
+    const url = 'https://iridologyapirest.herokuapp.com/api/AnalysisPatient/';
+    const url2 = 'https://iridologyapirest.herokuapp.com/api/AnalysisPatient/add';
+    const url3 = 'https://iridologyapirest.herokuapp.com/api/AnalysisPatient/update';
     const [rowData, setRowData] = useState();
     const [columns, setColumns] = useState([
         { field: 'id', headerName: 'ID', width: 50 },
         { field: 'PatientName', headerName: 'Patient Name', width: 200 },
         { field: 'PatientLastName', headerName: 'Patient LastName', width: 200 },
-        { field: 'BirthDate', headerName: 'BirthDate', width: 150 },
-        { field: 'Gender', headerName: 'Gender', width: 100 }
+        { field: 'BirthDate', headerName: 'BirthDate', width: 250 },
+        { field: 'Gender', headerName: 'Gender', width: 100 },
+        { field: 'Weight', headerName: 'Weight', width: 100 }
       ]);
     const handleClose = () => setOpen(false);
     const [rowSystems, setRowSystems] = useState();
@@ -52,7 +57,13 @@ function SetupFindings() {
     // EN ESTA SECCION SE CONTIENE TODAS LAS FUNCIONES
     const handleOpenNew = () => { 
         setAction(0);
-        setFormValue({IDPatient : 0, IDUser : 0, PatientName : "", PatientLastName : "", BirthDate : false, Gender : "" });
+        setIDPatient(0);
+        setIDUser(0);
+        setPatientName("");
+        setPatientLastName("");
+        setBirthDate(false);
+        setGender("");
+        setWeight(0);
         setOpen(true);
     }
     const handleOpenUpdate = () => { 
@@ -60,7 +71,17 @@ function SetupFindings() {
             swal("¡Debe seleccionar un campo!")
         }else{
             setAction(rowDataEdi.id);
-            setFormValue({IDPatient : rowDataEdi.IDPatient, IDUser : 0, PatientName : rowDataEdi.PatientName, PatientLastName : rowDataEdi.PatientLastName, BirthDate : rowDataEdi.BirthDate, Gender : rowDataEdi.Gender });
+            setIDPatient(rowDataEdi.IDPatient);
+            setIDUser(0);
+            setPatientName(rowDataEdi.PatientName);
+            setPatientLastName(rowDataEdi.PatientLastName);
+            var date = new Date(rowDataEdi.BirthDate),
+                mnth = ("0" + (date.getMonth() + 1)).slice(-2),
+                day = ("0" + date.getDate()).slice(-2);
+            var x = [date.getFullYear(), mnth, day].join("-");
+            setBirthDate(x);
+            setGender(rowDataEdi.Gender);
+            setWeight(rowDataEdi.Weight);
             setOpen(true);
         }
     }    
@@ -68,31 +89,24 @@ function SetupFindings() {
         try {
             const data = await fetch(url);
             const data1 = await data.json();
-            setRowData(JSON.parse(data1).filter(i=> i.IDUser == cookies.get('IDUser')));
+            setRowData(data1.filter(i=> i.IDUser == cookies.get('IDUser')));
         } catch (error) {
            console.log(error); 
         }
     }
-    const handleChange = (e) => {
-        const {id , value} = e.target   
-        setFormValue(prevState => ({
-            ...prevState,
-            [id] : value
-            })
-        )
-    }
     const CU = async ()=> {
-        await fetch(url, {
+        await fetch((Action==0)?url2:url3, {
             method: (Action==0)?'post':'put',
             headers: {'Content-Type':'application/json'},
             body: JSON.stringify([{
                 "IDPatient": Action,
                 "IDUser": cookies.get('IDUser'),
-                "PatientName": formValue.PatientName,
-                "PatientLastName": formValue.PatientLastName,
-                "BirthDate": formValue.BirthDate,
-                "Gender": formValue.Gender,
-                "Lenguage":"ENG"
+                "PatientName": PatientName,
+                "PatientLastName": PatientLastName,
+                "BirthDate": BirthDate,
+                "Gender": Gender,
+                "Lenguage":"ENG",
+                "Weight": Weight
             }])
         })
        .then((response) => response.json())
@@ -136,23 +150,24 @@ function SetupFindings() {
                 >
                 <Typography component="h1" variant="h5">New Patient</Typography>
                     <Box component="form" noValidate sx={{ mt: 1 }}>
-                        <TextField onChange={handleChange} value={formValue.PatientName} margin="normal" fullWidth id="PatientName" label="PatientName" name="PatientName"/>
-                        <TextField onChange={handleChange} value={formValue.PatientLastName} margin="normal" fullWidth id="PatientLastName" label="PatientLastName" name="PatientLastName"/>
-                        <TextField type="date" onChange={e => setFormValue(prevState => ({...prevState, ['BirthDate'] : e.target.value }))} value={formValue.BirthDate} margin="normal" fullWidth id="BirthDate" name="BirthDate"/>
+                        <TextField value={PatientName} onChange={e => setPatientName(e.target.value)} margin="normal" fullWidth id="PatientName" label="PatientName" name="PatientName"/>
+                        <TextField value={PatientLastName} onChange={e => setPatientLastName(e.target.value)} margin="normal" fullWidth id="PatientLastName" label="PatientLastName" name="PatientLastName"/>
+                        <TextField value={BirthDate} onChange={e => setBirthDate(e.target.value)} type="date" margin="normal" fullWidth id="BirthDate" name="BirthDate"/>
                         <FormControl fullWidth>
                             <InputLabel id="demo-simple-select-label">Gender</InputLabel>
                             <Select
                             labelId="demo-simple-select-label"
                             id="demo-simple-select"
-                            value={formValue.Gender}
+                            value={Gender} 
+                            onChange={e => setGender(e.target.value)}
                             label="Gender"
-                            onChange={e => setFormValue(prevState => ({...prevState, ['Gender'] : e.target.value }))}
                             >
                                 <MenuItem value=""><em>None</em></MenuItem>
                                 <MenuItem value="M">Men</MenuItem>
                                 <MenuItem value="W">Womman</MenuItem>
                             </Select>
                         </FormControl>
+                        <TextField value={Weight} onChange={e => setWeight(e.target.value)} inputProps={{max: 1000, min:1}} type="number" margin="normal" fullWidth id="Weight" label="Weight" name="Weight"/>
                         <FormControlLabel disabled control={<Checkbox defaultChecked />} label="English" />
                         {(Action==0) ?
                         <Button onClick={CU} fullWidth variant="contained" color="success" sx={{ mt: 3, mb: 2 }} >Create</Button>                            

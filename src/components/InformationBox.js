@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Grid, Paper} from '@mui/material';
 import Typography from '@mui/material/Typography';
+import CountUp from 'react-countup';
 
 function preventDefault(event) {
     event.preventDefault();
@@ -17,14 +18,14 @@ function InformationBox(props) {
             display: 'flex',
             backgroundColor: props.color,
             flexDirection: 'column',
-            height: 160,
+            height: 140,
         }}
         >
             <Typography component="h2" variant="h6" gutterBottom>
                 {props.title}
             </Typography>
             <Typography component="p" variant="h4">
-                {props.num}
+            <CountUp end={props.num} />
             </Typography>
             <Typography color="text.secondary" sx={{ flex: 1 }}>
                 {date}

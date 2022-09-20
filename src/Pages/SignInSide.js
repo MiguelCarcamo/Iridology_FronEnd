@@ -1,4 +1,5 @@
-import React, {useState} from 'react';
+import React, {useState , CSSProperties } from 'react';
+import {ClockLoader, RingLoader , BounceLoader } from "react-spinners";
 import md5 from 'md5';
 import swal from 'sweetalert';
 import Cookies from 'universal-cookie';
@@ -21,8 +22,14 @@ import img from './img/test.jpg'
 
 const theme = createTheme();
 const cookies = new Cookies();
+const override:CSSProperties = {
+  display: "block",
+  margin: "0 auto",
+};
 
 export default function SignInSide() {
+  let [loading, setLoading] = useState(false);
+
   const navigate = useNavigate();
   const [state , setState] = useState({
       User : "",
@@ -38,6 +45,7 @@ export default function SignInSide() {
       )
   }
   const iniciarSesion = async ()=> {
+    setLoading(true);
     //swal("Clave incorrecta");
     // console.log(md5(state.Password));
     await fetch('https://iridologyapirest.herokuapp.com/api/user/login/', {
@@ -51,6 +59,7 @@ export default function SignInSide() {
     .then((response) => response.json())
     .then((responseJson) => {
       if (responseJson['msj'] == 'Accion no fue Completada'){
+        setLoading(false);
         swal('Usuario no encontrado');
       }else{
         // console.log(responseJson);
@@ -108,7 +117,9 @@ export default function SignInSide() {
                         <TextField onChange={handleChange} margin="normal" required fullWidth id="User" label="User" name="User" autoComplete="User" autoFocus />
                         <TextField onChange={handleChange} margin="normal" required fullWidth name="Password" label="Password" type="Password" id="Password" autoComplete="current-password" />
                         <FormControlLabel control={<Checkbox value="remember" color="primary" />} label="Remember me" />
-                        <Button onClick={iniciarSesion} fullWidth variant="contained" sx={{ mt: 3, mb: 2 }} >Sign In</Button>
+                        <Button onClick={iniciarSesion} fullWidth variant="contained" sx={{ mt: 3, mb: 2 }} >
+                          Sign In
+                        </Button>
                         <Grid container>
                             <Grid item xs>
                                 <Link href="#" variant="body2">Forgot password?</Link>
@@ -119,6 +130,7 @@ export default function SignInSide() {
                         </Grid>
                     </Box>
                 </Box>
+                    <RingLoader color="#36d7b7" loading={loading} cssOverride={override} size={100} />
             </Grid>
         </Grid>
     </ThemeProvider>
