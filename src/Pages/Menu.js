@@ -20,6 +20,8 @@ import SetupSymptoms from "../components/SetupSymptoms";
 import AnalysisPatient from "../components/AnalysisPatient";
 import Analysis from "../components/Analysis";
 import AnalysisCustomer from "../components/AnalysisCustomer";
+import { IconButton } from '@mui/material';
+import CachedIcon from '@mui/icons-material/Cached';
 
 const mdTheme = createTheme();
 
@@ -50,12 +52,16 @@ export default function Main() {
               <Grid item xs={12}>
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
                 <Breadcrumbs aria-label="breadcrumb">
+                  
                   <Typography color="text.primary">
                     <NavLink to={'/Main/'}>
                       Main
                     </NavLink>
                   </Typography>
                   <Typography color="text.primary">{ruta}</Typography>
+                  <IconButton onClick={() => {window.location.reload(false)}} color="primary" component="label">
+                    <CachedIcon />
+                  </IconButton>
                 </Breadcrumbs>
                 </Paper>
                 {(ruta) ?
@@ -71,9 +77,11 @@ export default function Main() {
                       'MyAnalyzes': <AnalysisCustomer />,
                     }[ruta]
                   }
+                  
                 </Paper>
                 : null
                 }
+                
               </Grid>
             </Grid>
           </Container>

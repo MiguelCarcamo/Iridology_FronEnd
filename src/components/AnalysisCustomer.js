@@ -124,7 +124,7 @@ function AnalysisCustomer() {
             UpdateAnalysis();
           });
         } else {
-          swal("Cancelled", "Your file is safe :)", "error");
+          swal("Complete", "Your file is safe :)", "success");
         }
       })
     }
