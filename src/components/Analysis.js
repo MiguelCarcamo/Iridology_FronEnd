@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import {ClockLoader, RingLoader , BounceLoader } from "react-spinners";
 import InformationBox from './InformationBox';
-import { Grid, Container, Box, Typography, TextField, Transition, AppBar, Toolbar, IconButton, Alert } from '@mui/material';
+import { Grid, Container, Box, Typography, TextField, AppBar, Toolbar, IconButton, Alert } from '@mui/material';
 import { ButtonGroup, Button  } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import CloseIcon from '@mui/icons-material/Close';
@@ -155,7 +155,6 @@ const SaveData = async() => {
   if(CantOrgPro < CantOrg){
     swal("Incomplete Analysis", "You must complete the form!", "warning");
   }else{
-    console.table(DataValue);
     var url = 'https://iridologyapirest.herokuapp.com/api/AnalysisBodyOrgans/update'
     for (let i = 0; i < DataValue.length; i++) {
       const data = await fetch(url, {

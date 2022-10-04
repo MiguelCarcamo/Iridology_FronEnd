@@ -4,10 +4,22 @@ import ButtonGroup from '@mui/material/ButtonGroup';
 import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
 import AutoDeleteIcon from '@mui/icons-material/AutoDelete';
-import { Grid, Paper, Box, Typography, Dialog, FormControl, InputLabel, Select, MenuItem,  } from '@mui/material';
+import { Grid, Paper, Box, Typography, Dialog, FormControl, InputLabel, Select, MenuItem, DialogTitle, Chip, TextField  } from '@mui/material';
 import { FilledInput } from '@mui/material';
 import Cookies from 'universal-cookie';
 import swal from 'sweetalert';
+import AssessmentIcon from '@mui/icons-material/Assessment';
+import Accordion from '@mui/material/Accordion';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+
 // https://iridologyapirest.herokuapp.com/api/Analysis/
 const cookies = new Cookies();
 
@@ -15,23 +27,30 @@ function AnalysisCustomer() {
   const [rowData, setRowData] = useState([]);
   const [rowDataUpdate, setrowDataUpdate] = useState(false);
   const [rowData2, setRowData2] = useState([]);
+  const [rowData3, setRowData3] = useState([]);
+  const [rowData4, setRowData4] = useState([]);
   const [open, setOpen] = useState(false);
+  const [open2, setOpen2] = useState(false);
   const [table, setTable] = useState();
   const [file, setFile] = useState();
   const [file2, setFile2] = useState();
-  const [Patient , setPatient] = useState(0)
+  const [Patient , setPatient] = useState(0);
+  let [CancelBtn, setCancelBtn] = useState(true);
+  let [ReportBtn, setReportBtn] = useState(true);
   const url3 = 'https://iridologyapirest.herokuapp.com/api/AnalysisPatient/';
   const url2 = 'https://iridologyapirest.herokuapp.com/api/Analysis/';
   const url4 = 'https://iridologyapirest.herokuapp.com/api/Analysis/update';
+  const url5 = 'https://iridologyapirest.herokuapp.com/api/AnalysisSistems/';
+  const url6 = 'https://iridologyapirest.herokuapp.com/api/AnalysisBodyOrgans/';
   const [columns, setColumns] = useState([
     { field: 'id', headerName: 'ID', width: 50 },
     { field: 'Patient', headerName: 'Name Patient', width: 400 },
     { field: 'CreateDate', headerName: 'CreateDate', width: 200 },
-    { field: 'FinishDate', headerName: 'FinishDate', width: 200 },
     { field: 'Status', headerName: 'StatusName', width: 100 },
   ]);
   
   const handleClose = () => setOpen(false);
+  const handleClose2 = () => setOpen2(false);
   const handleOpen = () => setOpen(true);
   const UpdateAnalysisPatients = async () =>  {
     try {
@@ -94,7 +113,7 @@ function AnalysisCustomer() {
       method: 'put',
       headers: {'Content-Type':'application/json'},
       body: JSON.stringify([{
-              "IDAnalysis": rowDataUpdate,
+              "IDAnalysis": rowDataUpdate.id,
               "Status": '4'
           }])
       }
@@ -129,6 +148,28 @@ function AnalysisCustomer() {
       })
     }
   }
+  const UpdateSystems = async () =>  {
+    try {
+        if (rowDataUpdate != false){
+          const data = await fetch(url5 + rowDataUpdate.id);
+          const data1 = await data.json();
+          setRowData3(data1);
+        }
+    } catch (error) {
+        console.log(error); 
+    }
+  }
+  const UpdateBodyOrgans = async () =>  {
+    try {
+        if (rowDataUpdate != false){
+          const data = await fetch(url6 + rowDataUpdate.id);
+          const data1 = await data.json();
+          setRowData4(data1);
+        }
+    } catch (error) {
+        console.log(error); 
+    }
+  }
 
   useEffect(() => {
     UpdateAnalysisPatients();
@@ -136,18 +177,36 @@ function AnalysisCustomer() {
   useEffect(() => {
     UpdateAnalysis();
   }, []);
+  useEffect(() => {
+    UpdateSystems();
+    UpdateBodyOrgans();
+    if(rowDataUpdate.Status == 'NEW'){
+      setCancelBtn(false);
+      setReportBtn(true);
+    }
+    if(rowDataUpdate.Status == 'COMPLETE'){
+      setReportBtn(false);
+      setCancelBtn(true);
+    }
+    if(rowDataUpdate.Status == 'IN PROCESS' || rowDataUpdate.Status == 'DELETE'){
+      setCancelBtn(true);
+      setReportBtn(true);
+    }
+  }, [rowDataUpdate]);
+
   return (
     <div style={{ height: 625, width: '100%' }}>
     <ButtonGroup variant="contained" aria-label="outlined primary button group">
       <Button onClick={handleOpen} variant="contained" color="success" startIcon={<AddIcon />} > New</Button>
-      <Button onClick={handleOpenUpdate} variant="contained" color="primary" startIcon={<AutoDeleteIcon />} > Cancel </Button>
+      <Button disabled={CancelBtn} onClick={handleOpenUpdate} variant="contained" color="primary" startIcon={<AutoDeleteIcon />} > Cancel </Button>
+      <Button disabled={ReportBtn} onClick={()=>setOpen2(true)} variant="contained" color="secondary" startIcon={<AssessmentIcon />} > Report </Button>
     </ButtonGroup>
     {rowData?
         <DataGrid 
             style={{ height: 550, width: '100%' }} 
             rows={rowData} 
             columns={columns}
-            onRowClick={(x)=> setrowDataUpdate(x.row.id)}
+            onRowClick={(x)=> setrowDataUpdate(x.row)}
         />
     : false}
     <Dialog open={open} onClose={handleClose} >
@@ -170,6 +229,53 @@ function AnalysisCustomer() {
           </Box>
           </Box>
       </Grid>
+    </Dialog>
+    <Dialog open={open2} onClose={handleClose2} fullWidth maxWidth="md">
+        <DialogTitle id="max-width-dialog-title">Report</DialogTitle>
+          {rowData3?
+            rowData3.map((option) =>
+            <Accordion key={option.id}>
+              <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header" >
+                <Typography variant="h5">{option.Sistems}    .</Typography>
+                <Typography variant="h6" >-  [ {option.Value} ]</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <TableContainer component={Paper}>
+                  <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>BodyOrgans</TableCell>
+                        <TableCell align="right">Value</TableCell>
+                        <TableCell align="right">Symptoms</TableCell>
+                        <TableCell align="right">Findings</TableCell>
+                        <TableCell align="right">Foods</TableCell>
+                        <TableCell align="right">Not Foods</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                    {rowData4?
+                    rowData4.map((row) => (
+                      (row.Sistems == option.Sistems) ?
+                      <TableRow
+                        key={row.id}
+                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                      >
+                        <TableCell align="right">{row.bodyorgans}</TableCell>
+                        <TableCell align="right">{row.bodyorgansvalue}</TableCell>
+                        <TableCell align="right">{row.symptoms}</TableCell>
+                        <TableCell align="right">{row.findings}</TableCell>
+                        <TableCell align="right">{row.foods}</TableCell>
+                        <TableCell align="right">{row.notfoods}</TableCell>
+                      </TableRow>
+                      :false
+                    )):false}
+                  </TableBody>
+                  </Table>
+                </TableContainer>
+              </AccordionDetails>
+            </Accordion>
+            )
+            :false}
     </Dialog>
   </div>
   )
