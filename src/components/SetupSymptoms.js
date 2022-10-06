@@ -15,6 +15,7 @@ import Checkbox from '@mui/material/Checkbox';
 import TextField from '@mui/material/TextField';
 import AddIcon from '@mui/icons-material/Add';
 import RefreshIcon from '@mui/icons-material/Refresh';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
 import swal from 'sweetalert';
 
@@ -106,6 +107,46 @@ function SetupSymptoms() {
             }
        });
     }
+    const EnviarDatos2 = async () => {
+        var url = 'https://iridologyapirest.herokuapp.com/api/SetupSymptoms/delete'
+        const data = await fetch(url, {
+          method: 'delete',
+          headers: {'Content-Type':'application/json'},
+          body: JSON.stringify([{
+                  "IDSetupSymptoms": rowDataEdi.id
+              }])
+          }
+        );
+      } 
+    const handleOpenDelete = () => { 
+        if (!rowDataEdi.id){
+            swal("¡Debe seleccionar un campo!")
+        }else{
+            swal({
+                title: "Are you sure?",
+                text: "You will not be able to recover this file!",
+                icon: "warning",
+                buttons: [
+                  'No, cancel it!',
+                  'Yes, I am sure!'
+                ],
+                dangerMode: true,
+              }).then(function(isConfirm) {
+                if (isConfirm) {
+                  EnviarDatos2();
+                  swal({
+                    title: 'Shortlisted!',
+                    text: 'Candidates are successfully shortlisted!',
+                    icon: 'success'
+                  }).then(function() {
+                    UpdateData();
+                  });
+                } else {
+                  swal("Complete", "Your file is safe :)", "success");
+                }
+              })
+        }
+    }
 
     // EN ESTA SECCION CONTIENE TODAS LAS USEEFFECT QUE REQUERIMOS PARA EL FUNCIONAMIENTO
     useEffect(() => {
@@ -123,6 +164,7 @@ function SetupSymptoms() {
             <ButtonGroup variant="contained" aria-label="outlined primary button group">
                 <Button onClick={handleOpenNew} variant="contained" color="success" startIcon={<AddIcon />} > New</Button>
                 <Button onClick={handleOpenUpdate} startIcon={<RefreshIcon />} > Update</Button>
+                <Button onClick={handleOpenDelete} color="error" startIcon={<DeleteForeverIcon />} > Delete</Button>
             </ButtonGroup>
             {rowData?
                 <DataGrid 

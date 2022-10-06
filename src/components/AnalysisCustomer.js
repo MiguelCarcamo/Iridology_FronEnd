@@ -31,7 +31,7 @@ function AnalysisCustomer() {
   const [rowData4, setRowData4] = useState([]);
   const [open, setOpen] = useState(false);
   const [open2, setOpen2] = useState(false);
-  const [table, setTable] = useState();
+  const [open3, setOpen3] = useState(false);
   const [file, setFile] = useState();
   const [file2, setFile2] = useState();
   const [Patient , setPatient] = useState(0);
@@ -51,6 +51,7 @@ function AnalysisCustomer() {
   
   const handleClose = () => setOpen(false);
   const handleClose2 = () => setOpen2(false);
+  const handleClose3 = () => setOpen3(false);
   const handleOpen = () => setOpen(true);
   const UpdateAnalysisPatients = async () =>  {
     try {
@@ -200,6 +201,7 @@ function AnalysisCustomer() {
       <Button onClick={handleOpen} variant="contained" color="success" startIcon={<AddIcon />} > New</Button>
       <Button disabled={CancelBtn} onClick={handleOpenUpdate} variant="contained" color="primary" startIcon={<AutoDeleteIcon />} > Cancel </Button>
       <Button disabled={ReportBtn} onClick={()=>setOpen2(true)} variant="contained" color="secondary" startIcon={<AssessmentIcon />} > Report </Button>
+      <Button disabled={ReportBtn} onClick={()=>setOpen3(true)} variant="outlined" color="secondary" startIcon={<AssessmentIcon />} > quick report </Button>
     </ButtonGroup>
     {rowData?
         <DataGrid 
@@ -245,11 +247,11 @@ function AnalysisCustomer() {
                     <TableHead>
                       <TableRow>
                         <TableCell>BodyOrgans</TableCell>
-                        <TableCell align="right">Value</TableCell>
-                        <TableCell align="right">Symptoms</TableCell>
-                        <TableCell align="right">Findings</TableCell>
-                        <TableCell align="right">Foods</TableCell>
-                        <TableCell align="right">Not Foods</TableCell>
+                        <TableCell align="center">Value</TableCell>
+                        <TableCell align="center">Symptoms</TableCell>
+                        <TableCell align="center">Findings</TableCell>
+                        <TableCell align="center">Foods</TableCell>
+                        <TableCell align="center">Not Foods</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
@@ -260,12 +262,12 @@ function AnalysisCustomer() {
                         key={row.id}
                         sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                       >
-                        <TableCell align="right">{row.bodyorgans}</TableCell>
-                        <TableCell align="right">{row.bodyorgansvalue}</TableCell>
-                        <TableCell align="right">{row.symptoms}</TableCell>
-                        <TableCell align="right">{row.findings}</TableCell>
-                        <TableCell align="right">{row.foods}</TableCell>
-                        <TableCell align="right">{row.notfoods}</TableCell>
+                        <TableCell align="left">{row.bodyorgans}</TableCell>
+                        <TableCell align="left">{row.bodyorgansvalue}</TableCell>
+                        <TableCell align="left">{String(row.symptoms).replace(/[{}"]/g, '')}</TableCell>
+                        <TableCell align="left">{String(row.findings).replace(/[{}"]/g, '')}</TableCell>
+                        <TableCell align="left">{String(row.foods).replace(/[{}"]/g, '')}</TableCell>
+                        <TableCell align="left">{String(row.notfoods).replace(/[{}"]/g, '')}</TableCell>
                       </TableRow>
                       :false
                     )):false}
@@ -276,6 +278,43 @@ function AnalysisCustomer() {
             </Accordion>
             )
             :false}
+    </Dialog>
+    <Dialog open={open3} onClose={handleClose3} fullWidth maxWidth="lg">
+      <DialogTitle id="max-width-dialog-title">Report</DialogTitle>
+      <TableContainer component={Paper}>
+        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+          <TableHead>
+            <TableRow>
+              <TableCell>Sistems</TableCell>
+              <TableCell>BodyOrgans</TableCell>
+              <TableCell align="center">Value</TableCell>
+              <TableCell align="center">Symptoms</TableCell>
+              <TableCell align="center">Findings</TableCell>
+              <TableCell align="center">Foods</TableCell>
+              <TableCell align="center">Not Foods</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+          {rowData4?
+          rowData4.map((row) => (
+            (row.bodyorgansvalue < 50) ?
+            <TableRow
+              key={row.id}
+              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+            >
+              <TableCell align="left">{row.Sistems}</TableCell>
+              <TableCell align="left">{row.bodyorgans}</TableCell>
+              <TableCell align="left">{row.bodyorgansvalue}</TableCell>
+              <TableCell align="left">{String(row.symptoms).replace(/[{}"]/g, '')}</TableCell>
+              <TableCell align="left">{String(row.findings).replace(/[{}"]/g, '')}</TableCell>
+              <TableCell align="left">{String(row.foods).replace(/[{}"]/g, '')}</TableCell>
+              <TableCell align="left">{String(row.notfoods).replace(/[{}"]/g, '')}</TableCell>
+            </TableRow>
+            :false
+          )):false}
+        </TableBody>
+        </Table>
+      </TableContainer>
     </Dialog>
   </div>
   )
