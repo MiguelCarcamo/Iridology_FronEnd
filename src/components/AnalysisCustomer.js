@@ -19,11 +19,16 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
+import {CChart} from '@coreui/react-chartjs';
 
 // https://iridologyapirest.herokuapp.com/api/Analysis/
 const cookies = new Cookies();
 
 function AnalysisCustomer() {
+  const [rptSistems, setrptSistems] = useState("");
+  const [rptOrgans, setrptOrgans] = useState([]);
+  const [varlabes, setVarlabes] = useState([]);
+  const [varValues, setVarValues] = useState([]);
   const [rowData, setRowData] = useState([]);
   const [rowDataUpdate, setrowDataUpdate] = useState(false);
   const [rowData2, setRowData2] = useState([]);
@@ -152,9 +157,13 @@ function AnalysisCustomer() {
   const UpdateSystems = async () =>  {
     try {
         if (rowDataUpdate != false){
+          setVarlabes([]);
+          setVarValues([]);
           const data = await fetch(url5 + rowDataUpdate.id);
           const data1 = await data.json();
           setRowData3(data1);
+          data1.map((x) => setVarlabes(oldArray => [...oldArray, x.Sistems]));
+          data1.map((x) => setVarValues(oldArray => [...oldArray, x.Value]));
         }
     } catch (error) {
         console.log(error); 
@@ -194,7 +203,17 @@ function AnalysisCustomer() {
       setReportBtn(true);
     }
   }, [rowDataUpdate]);
+  useEffect(() => {
+    setrptOrgans(rowData4.filter(i=> i.Sistems == rptSistems));
+  }, [rptSistems]);
+  useEffect(() => {
+    setVarlabes([]);
+    setVarValues([]);
+    rptOrgans.map((x) => setVarlabes(oldArray => [...oldArray, x.bodyorgans]));
+    rptOrgans.map((x) => setVarValues(oldArray => [...oldArray, x.bodyorgansvalue]));
+  }, [rptOrgans]);
 
+  // Graficos Test
   return (
     <div style={{ height: 625, width: '100%' }}>
     <ButtonGroup variant="contained" aria-label="outlined primary button group">
@@ -279,17 +298,69 @@ function AnalysisCustomer() {
             )
             :false}
     </Dialog>
-    <Dialog open={open3} onClose={handleClose3} fullWidth maxWidth="lg">
+    <Dialog open={open3} onClose={handleClose3} fullWidth maxWidth="md">
       <DialogTitle id="max-width-dialog-title">Report</DialogTitle>
+      <FormControl>
+        <InputLabel id="demo-simple-select-label">Sistems</InputLabel>
+        <Select
+          labelId="demo-simple-select-label"
+          id="demo-simple-select"
+          value={rptSistems}
+          label="Age"
+          onChange={e => setrptSistems(e.target.value)}
+        >
+          {rowData3?
+            rowData3.map((option) =>
+              <MenuItem key={option.id} value={option.Sistems}>{option.Sistems}</MenuItem>
+              ):false
+            }
+        </Select>
+      </FormControl>
       <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+      <CChart
+        type="bar"
+        data={{
+          labels: varlabes,
+          datasets: [
+            {
+              label: 'Organ Values',
+              backgroundColor: ['#021C1E','#004445','#2C7873','#6FB98F'],
+              data: varValues,
+            },
+          ],
+        }}
+        labels="Organs"
+      />
+        <Typography component="h1" variant="h5">Symptoms</Typography>
+        <Table sx={{ minWidth: 645 }} aria-label="simple table">
           <TableHead>
             <TableRow>
-              <TableCell>Sistems</TableCell>
               <TableCell>BodyOrgans</TableCell>
               <TableCell align="center">Value</TableCell>
               <TableCell align="center">Symptoms</TableCell>
-              <TableCell align="center">Findings</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+          {rowData4?
+          rowData4.map((row) => (
+            (row.bodyorgansvalue < 50 && row.Sistems == rptSistems && String(row.symptoms).replace(/[{}"]/g, '') != 'null') ?
+            <TableRow
+              key={row.id}
+              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+            >
+              <TableCell align="left">{row.bodyorgans}</TableCell>
+              <TableCell align="left">{row.bodyorgansvalue}</TableCell>
+              <TableCell align="left">{String(row.symptoms).replace(/[{}"]/g, '')}</TableCell>
+            </TableRow>
+            :false
+          )):false}
+        </TableBody>
+        </Table>
+        <Typography component="h1" variant="h5">Findings</Typography>
+        <Table sx={{ minWidth: 645 }} aria-label="simple table">
+          <TableHead>
+            <TableRow>
+              <TableCell>Findings</TableCell>
               <TableCell align="center">Foods</TableCell>
               <TableCell align="center">Not Foods</TableCell>
             </TableRow>
@@ -297,15 +368,11 @@ function AnalysisCustomer() {
           <TableBody>
           {rowData4?
           rowData4.map((row) => (
-            (row.bodyorgansvalue < 50) ?
+            (row.bodyorgansvalue < 50 && row.Sistems == rptSistems && String(row.findings).replace(/[{}"]/g, '') != 'null' ) ?
             <TableRow
               key={row.id}
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
             >
-              <TableCell align="left">{row.Sistems}</TableCell>
-              <TableCell align="left">{row.bodyorgans}</TableCell>
-              <TableCell align="left">{row.bodyorgansvalue}</TableCell>
-              <TableCell align="left">{String(row.symptoms).replace(/[{}"]/g, '')}</TableCell>
               <TableCell align="left">{String(row.findings).replace(/[{}"]/g, '')}</TableCell>
               <TableCell align="left">{String(row.foods).replace(/[{}"]/g, '')}</TableCell>
               <TableCell align="left">{String(row.notfoods).replace(/[{}"]/g, '')}</TableCell>
