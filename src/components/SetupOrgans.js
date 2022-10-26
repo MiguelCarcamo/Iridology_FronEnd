@@ -15,6 +15,10 @@ import Checkbox from '@mui/material/Checkbox';
 import TextField from '@mui/material/TextField';
 import AddIcon from '@mui/icons-material/Add';
 import RefreshIcon from '@mui/icons-material/Refresh';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControl from '@mui/material/FormControl';
+import FormLabel from '@mui/material/FormLabel';
 
 import swal from 'sweetalert';
 
@@ -32,6 +36,7 @@ function SetupOrgans() {
     const [womman, setwomman] = useState(null);
     const [RangeMax, setRangeMax] = useState(0);
     const [RangeMin, setRangeMin] = useState(0);
+    const [level, setLevel] = useState("High");
 
     const url = 'https://iridologyapirest.herokuapp.com/api/SetupBodyOrgans/';
     const url3 = 'https://iridologyapirest.herokuapp.com/api/SetupBodyOrgans/add';
@@ -41,6 +46,7 @@ function SetupOrgans() {
         { field: 'id', headerName: 'ID', width: 100 },
         { field: 'SetupSystems', headerName: 'Setup Systems', width: 200 },
         { field: 'BodyOrgans', headerName: 'Setup Body Organs', width: 200 },
+        { field: 'importance_level', headerName: 'Importance Level', width: 150 },
         { field: 'Left', headerName: 'Left', width: 125 },
         { field: 'Right', headerName: 'Right', width: 125 },
         { field: 'Men', headerName: 'Men', width: 125 },
@@ -67,6 +73,7 @@ function SetupOrgans() {
         setRangeMax(0);
         setRangeMin(0);
         setOpen(true);
+        setLevel("High");
     }
     const handleOpenUpdate = () => { 
         if (!rowDataEdi.id){
@@ -81,6 +88,7 @@ function SetupOrgans() {
             setwomman((rowDataEdi.Womman==1)?true:false);
             setRangeMax(rowDataEdi.RangeMax);
             setRangeMin(rowDataEdi.RangeMin);
+            setLevel(rowDataEdi.importance_level);
             setOpen(true);
         }
     }    
@@ -116,7 +124,8 @@ function SetupOrgans() {
                 "Womman": (womman)?1:0,
                 "RangeMax": RangeMax,
                 "RangeMin": RangeMin,
-                "Lenguage":"ENG"
+                "Lenguage":"ENG",
+                "importance_level": level
             }])
         })
        .then((response) => response.json())
@@ -168,6 +177,20 @@ function SetupOrgans() {
                             options={(rowSystems)?rowSystems.map((option) =>option.id + '-' + option.setupsystems):[]}
                             renderInput={(params) => <TextField {...params} label="Systems" />}
                         />
+                        <FormControl>
+                            <FormLabel id="demo-row-radio-buttons-group-label">Importance Level</FormLabel>
+                            <RadioGroup
+                                row
+                                aria-labelledby="demo-row-radio-buttons-group-label"
+                                name="row-radio-buttons-group"
+                                value={level}
+                                onChange={e => setLevel(e.target.value)} 
+                            >
+                                <FormControlLabel value="High" control={<Radio color="secondary" />} label="High" />
+                                <FormControlLabel value="Medium " control={<Radio />} label="Medium " />
+                                <FormControlLabel value="Low" control={<Radio color="success" />} label="Low" />
+                            </RadioGroup>
+                        </FormControl>
                         <TextField value={BodyOrgans} onChange={e => setBodyOrgans(e.target.value)} margin="normal" fullWidth id="BodyOrgans" label="BodyOrgans" name="BodyOrgans"/>
                         <FormControlLabel control={<Checkbox onChange={e => setLeft(e.target.checked) } checked={Left} name='Left' id='Left' />} label="Left" />
                         <FormControlLabel control={<Checkbox onChange={e =>  setRight(e.target.checked)} checked={Right} name='Right' id='Right' />} label="Right" />

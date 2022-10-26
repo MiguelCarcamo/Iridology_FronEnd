@@ -20,6 +20,8 @@ import SetupSymptoms from "../components/SetupSymptoms";
 import AnalysisPatient from "../components/AnalysisPatient";
 import Analysis from "../components/Analysis";
 import AnalysisCustomer from "../components/AnalysisCustomer";
+import SetupRanges from "../components/SetupRanges";
+import SetupFoods from "../components/SetupFoods";
 import { IconButton } from '@mui/material';
 import CachedIcon from '@mui/icons-material/Cached';
 
@@ -72,9 +74,11 @@ export default function Main() {
                       'SetupOrgans': <SetupOrgans />,
                       'SetupFindings': <SetupFindings />,
                       'SetupSymptoms': <SetupSymptoms />,
+                      'SetupRanges': <SetupRanges />,
                       'AnalysisPatient': <AnalysisPatient />,
                       'Analysis': <Analysis />,
                       'MyAnalyzes': <AnalysisCustomer />,
+                      'SetupFoods': <SetupFoods />,
                     }[ruta]
                   }
                   

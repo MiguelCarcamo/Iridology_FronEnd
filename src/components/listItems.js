@@ -15,6 +15,8 @@ import FavoriteOutlinedIcon from '@mui/icons-material/FavoriteOutlined';
 import AnalyticsOutlinedIcon from '@mui/icons-material/AnalyticsOutlined';
 import InsightsOutlinedIcon from '@mui/icons-material/InsightsOutlined';
 import AdminPanelSettingsOutlinedIcon from '@mui/icons-material/AdminPanelSettingsOutlined';
+import LowPriorityOutlinedIcon from '@mui/icons-material/LowPriorityOutlined';
+import RestaurantIcon from '@mui/icons-material/Restaurant';
 import { useNavigate } from 'react-router-dom';
 
 
@@ -68,6 +70,22 @@ return(
               <AddAlertOutlinedIcon />
             </ListItemIcon>
             <ListItemText primary="Symptoms" />
+          </ListItemButton>
+        </List>
+        <List onClick={() => navigate('/Main/SetupFoods')} component="div" disablePadding>
+          <ListItemButton sx={{ pl: 4 }}>
+            <ListItemIcon>
+              <RestaurantIcon />
+            </ListItemIcon>
+            <ListItemText primary="Foods" />
+          </ListItemButton>
+        </List>
+        <List onClick={() => navigate('/Main/SetupRanges')} component="div" disablePadding>
+          <ListItemButton sx={{ pl: 4 }}>
+            <ListItemIcon>
+              <LowPriorityOutlinedIcon />
+            </ListItemIcon>
+            <ListItemText primary="Ranges" />
           </ListItemButton>
         </List>
       </Collapse>

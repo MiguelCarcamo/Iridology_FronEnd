@@ -6,51 +6,49 @@ import ButtonGroup from '@mui/material/ButtonGroup';
 import Dialog from '@mui/material/Dialog';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
-import Autocomplete from '@mui/material/Autocomplete';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
-
+import Autocomplete from '@mui/material/Autocomplete';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import TextField from '@mui/material/TextField';
 import AddIcon from '@mui/icons-material/Add';
 import RefreshIcon from '@mui/icons-material/Refresh';
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
 import swal from 'sweetalert';
 
-function SetupFindings() {
+
+function SetupFoods() {
     // EN ESTE BLOQUE ESTA TODA LAS VARIABLES REQUERIDAS
     const [rowDataEdi, setRowDataEdi] = useState([]);
+    const [rowData, setRowData] = useState();
     const [open, setOpen] = useState(false);
-    const [BodyOrgans, setBodyOrgans] = useState(null);
-    const [Findings, setFindings] = useState("");
+    const [Systems, setSystems] = useState(null);
+    const [SetupSystems, setSetupSystems] = useState("");
+    const [Foods, setFoods] = useState("");
+    const [NotFoods, setNotFoods] = useState("");
     const [RangeMax, setRangeMax] = useState(0);
     const [RangeMin, setRangeMin] = useState(0);
-
-    const url = 'https://iridologyapirest.herokuapp.com/api/SetupFindings/';
-    const url3 = 'https://iridologyapirest.herokuapp.com/api/SetupFindings/add';
-    const url4 = 'https://iridologyapirest.herokuapp.com/api/SetupFindings/update';
-    const [rowData, setRowData] = useState();
+    const [Action, setAction] = useState(0);
     const [columns, setColumns] = useState([
         { field: 'id', headerName: 'ID', width: 50 },
-        { field: 'SetupBodyOrgans', headerName: 'Setup Body Organs', width: 150 },
-        { field: 'Findings', headerName: 'Findings', width: 550 },
-        { field: 'RangeMax', headerName: 'Range Max', width: 100 },
-        { field: 'RangeMin', headerName: 'Range Min', width: 100 },
-        { field: 'Lenguage', headerName: 'Lenguage', width: 75 },
-      ]);
-    const handleClose = () => setOpen(false);
-    const url2 = 'https://iridologyapirest.herokuapp.com/api/SetupBodyOrgans/';
-    const [rowBodyOrgans, setRowBodyOrgans] = useState();
-    const [Action, setAction] = useState(0);
-    const [Lista, setLista] = useState();
-
+        { field: 'SetupSystems', headerName: 'Setup Systems', width: 200 },
+        { field: 'Foods', headerName: 'Foods', width: 250 },
+        { field: 'NotFoods', headerName: 'Not Foods', width: 250 },
+        { field: 'RangeMax', headerName: 'Range Min', width: 100 },
+        { field: 'RangeMin', headerName: 'Range Max', width: 100 },
+        { field: 'Lenguage', headerName: 'Lenguage', width: 150 },
+        ]);
+    const url = 'https://iridologyapirest.herokuapp.com/api/SetupFoods/';
+    const url3 = 'https://iridologyapirest.herokuapp.com/api/SetupFoods/add';
+    const url4 = 'https://iridologyapirest.herokuapp.com/api/SetupFoods/update';
     // EN ESTA SECCION SE CONTIENE TODAS LAS FUNCIONES
+    const handleClose = () => setOpen(false);
     const handleOpenNew = () => { 
         setAction(0);
-        setBodyOrgans(null);
-        setFindings("");
+        setSetupSystems(null);
+        setFoods("");
+        setNotFoods("");
         setRangeMax(0);
         setRangeMin(0);
         setOpen(true);
@@ -60,53 +58,14 @@ function SetupFindings() {
             swal("¡Debe seleccionar un campo!")
         }else{
             setAction(rowDataEdi.id);
-            setBodyOrgans(rowDataEdi.IDSetupBodyOrgans+'-'+rowDataEdi.SetupBodyOrgans);
-            setFindings(rowDataEdi.Findings);
+            setSetupSystems(rowDataEdi.IDSetupBodyOrgans + '-' + rowDataEdi.SetupSystems);
+            setFoods(rowDataEdi.Foods);
+            setNotFoods(rowDataEdi.NotFoods);
             setRangeMax(rowDataEdi.RangeMax);
             setRangeMin(rowDataEdi.RangeMin);
             setOpen(true);
         }
     }
-    const EnviarDatos2 = async () => {
-        var url = 'https://iridologyapirest.herokuapp.com/api/SetupFindings/delete'
-        const data = await fetch(url, {
-          method: 'delete',
-          headers: {'Content-Type':'application/json'},
-          body: JSON.stringify([{
-                  "IDSetupFindings": rowDataEdi.id
-              }])
-          }
-        );
-      } 
-    const handleOpenDelete = () => { 
-        if (!rowDataEdi.id){
-            swal("¡Debe seleccionar un campo!")
-        }else{
-            swal({
-                title: "Are you sure?",
-                text: "You will not be able to recover this file!",
-                icon: "warning",
-                buttons: [
-                  'No, cancel it!',
-                  'Yes, I am sure!'
-                ],
-                dangerMode: true,
-              }).then(function(isConfirm) {
-                if (isConfirm) {
-                  EnviarDatos2();
-                  swal({
-                    title: 'Shortlisted!',
-                    text: 'Candidates are successfully shortlisted!',
-                    icon: 'success'
-                  }).then(function() {
-                    UpdateData();
-                  });
-                } else {
-                  swal("Complete", "Your file is safe :)", "success");
-                }
-              })
-        }
-    }    
     const UpdateData = async () =>  {
         try {
             const data = await fetch(url);
@@ -116,26 +75,19 @@ function SetupFindings() {
            console.log(error); 
         }
     }
-    const UpdateBodyOrgans = async () =>  {
-        try {
-            const data = await fetch(url2);
-            const data1 = await data.json();
-            setRowBodyOrgans(data1);
-        } catch (error) {
-           console.log(error); 
-        }
-    }
+
     const CU = async ()=> {
         await fetch((Action==0)?url3:url4, {
             method: (Action==0)?'post':'put',
             headers: {'Content-Type':'application/json'},
             body: JSON.stringify([{
-                "IDSetupFindings": Action,
-                "IDSetupBodyOrgans": BodyOrgans.split('-')[0],
-                "Findings": Findings,
+                "IDSetupFoods": Action,
+                "idsetupsystems": SetupSystems.split('-')[0],
+                "Foods": Foods,
+                "NotFoods": NotFoods,
                 "RangeMax": RangeMax,
                 "RangeMin": RangeMin,
-                "Lenguage":"ENG"
+                "Lenguage": "ENG"
             }])
         })
        .then((response) => response.json())
@@ -147,7 +99,16 @@ function SetupFindings() {
             }
        });
     }
-
+    const UpdateSystems = async () =>  {
+        try {
+            const data = await fetch("https://iridologyapirest.herokuapp.com/api/SetupSystems/");
+            const data1 = await data.json();
+            setSystems(data1);
+        } catch (error) {
+           console.log(error); 
+        }
+    }
+    
     // EN ESTA SECCION CONTIENE TODAS LAS USEEFFECT QUE REQUERIMOS PARA EL FUNCIONAMIENTO
     useEffect(() => {
         const run = async () =>
@@ -156,15 +117,15 @@ function SetupFindings() {
     }, []);
     useEffect(() => {
         const run = async () =>
-            await UpdateBodyOrgans();
+            await UpdateSystems();
         run();
     }, []);
+
     return (
         <div style={{ height: 625, width: '100%' }}>
             <ButtonGroup variant="contained" aria-label="outlined primary button group">
                 <Button onClick={handleOpenNew} variant="contained" color="success" startIcon={<AddIcon />} > New</Button>
                 <Button onClick={handleOpenUpdate} startIcon={<RefreshIcon />} > Update</Button>
-                <Button onClick={handleOpenDelete} color="error" startIcon={<DeleteForeverIcon />} > Delete</Button>
             </ButtonGroup>
             {rowData?
                 <DataGrid 
@@ -185,20 +146,21 @@ function SetupFindings() {
                         alignItems: 'center',
                         }}
                     >
-                    <Typography component="h1" variant="h5">Findings</Typography>
+                    <Typography component="h1" variant="h5">Foods</Typography>
                         <Box component="form" noValidate sx={{ mt: 1 }}>
                             <Autocomplete
                                 id="free-solo-demo"
                                 onChange={(event, newValue) => {
-                                    setBodyOrgans(newValue);
+                                    setSetupSystems(newValue);
                                 }}
-                                value={BodyOrgans}
-                                options={(rowBodyOrgans)?rowBodyOrgans.map((option) =>option.id + '-' + option.BodyOrgans):[]}
+                                value={SetupSystems}
+                                options={(Systems)?Systems.map((option) =>option.id + '-' + option.setupsystems):[]}
                                 renderInput={(params) => <TextField {...params} label="Body Organs" />}
                             />
                             <TextField value={RangeMax} onChange={e => setRangeMax(e.target.value)} inputProps={{max: 100, min:1}} type="number" margin="normal" fullWidth id="RangeMax" label="RangeMax" name="RangeMax"/>
                             <TextField value={RangeMin} onChange={e => setRangeMin(e.target.value)} inputProps={{max: 100, min:1}} type="number" margin="normal" fullWidth id="RangeMin" label="RangeMin" name="RangeMin"/>
-                            <TextField multiline value={Findings} onChange={e => setFindings(e.target.value)} margin="normal" fullWidth id="Findings" label="Findings" name="Findings"/>
+                            <TextField multiline value={Foods} onChange={e => setFoods(e.target.value)} margin="normal" fullWidth id="Foods" label="Foods" name="Foods"/>
+                            <TextField multiline value={NotFoods} onChange={e => setNotFoods(e.target.value)} margin="normal" fullWidth id="NotFoods" label="NotFoods" name="NotFoods"/>
                             <FormControlLabel disabled control={<Checkbox defaultChecked />} label="English" />
                             {(Action==0) ?
                             <Button onClick={CU} fullWidth variant="contained" color="success" sx={{ mt: 3, mb: 2 }} >Create</Button>                            
@@ -213,4 +175,4 @@ function SetupFindings() {
     )
 }
 
-export default SetupFindings
+export default SetupFoods

@@ -14,6 +14,10 @@ import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import AddIcon from '@mui/icons-material/Add';
 import RefreshIcon from '@mui/icons-material/Refresh';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControl from '@mui/material/FormControl';
+import FormLabel from '@mui/material/FormLabel';
 
 function SetupSystemps() {
     const url = 'https://iridologyapirest.herokuapp.com/api/SetupSystems/';
@@ -26,6 +30,7 @@ function SetupSystemps() {
         RangeMax : 0,
         RangeMin : 0
     })
+    const [level, setLevel] = useState("High");
     const handleChange = (e) => {
         const {id , value} = e.target   
         setFormValue(prevState => ({
@@ -38,6 +43,7 @@ function SetupSystemps() {
                                 setOpen(true);
                                 setAction(0);
                                 setFormValue({Systems:"", RangeMax:"", RangeMin:"" });
+                                setLevel("High");
                             }
     const handleOpenU = () => {
                                 if (!rowDataEdi.id){
@@ -46,12 +52,14 @@ function SetupSystemps() {
                                     setOpen(true);
                                     setAction(rowDataEdi.id);
                                     setFormValue({Systems:rowDataEdi.setupsystems, RangeMax:rowDataEdi.rangemax, RangeMin:rowDataEdi.rangemin });
+                                    setLevel(rowDataEdi.importance_level);
                                 }
                             }
     const handleClose = () => setOpen(false);
     const [columns, setColumns] = useState([
         { field: 'id', headerName: 'ID', width: 100 },
         { field: 'setupsystems', headerName: 'Setup Systems', width: 350 },
+        { field: 'importance_level', headerName: 'Importance Level', width: 150 },
         { field: 'rangemax', headerName: 'Range Max', width: 125 },
         { field: 'rangemin', headerName: 'Range Min', width: 125 },
         { field: 'lenguage', headerName: 'Lenguage', width: 150 },
@@ -74,7 +82,8 @@ function SetupSystemps() {
                 "SetupSystems": formValue.Systems,
                 "RangeMax": formValue.RangeMax,
                 "RangeMin": formValue.RangeMin,
-                "Lenguage": "ENG"
+                "Lenguage": "ENG",
+                "importance_level": level
             }])
         })
        .then((response) => response.json())
@@ -95,7 +104,8 @@ function SetupSystemps() {
                 "SetupSystems": formValue.Systems,
                 "RangeMax": formValue.RangeMax,
                 "RangeMin": formValue.RangeMin,
-                "Lenguage": "ENG"
+                "Lenguage": "ENG",
+                "importance_level": level
             }])
         })
        .then((response) => response.json())
@@ -142,6 +152,20 @@ function SetupSystemps() {
                         <Box component="form" noValidate sx={{ mt: 1 }}>
                         
                             <TextField onChange={handleChange} value={formValue.Systems} margin="normal" fullWidth id="Systems" label="Systems" name="Systems"/>
+                            <FormControl>
+                                <FormLabel id="demo-row-radio-buttons-group-label">Importance Level</FormLabel>
+                                <RadioGroup
+                                    row
+                                    aria-labelledby="demo-row-radio-buttons-group-label"
+                                    name="row-radio-buttons-group"
+                                    value={level}
+                                    onChange={e => setLevel(e.target.value)} 
+                                >
+                                    <FormControlLabel value="High" control={<Radio color="secondary" />} label="High" />
+                                    <FormControlLabel value="Medium " control={<Radio />} label="Medium " />
+                                    <FormControlLabel value="Low" control={<Radio color="success" />} label="Low" />
+                                </RadioGroup>
+                            </FormControl>
                             <TextField onChange={handleChange} value={formValue.RangeMax} inputProps={{max: 100, min:1}} type="number" margin="normal" fullWidth id="RangeMax" label="RangeMax" name="RangeMax"/>
                             <TextField onChange={handleChange} value={formValue.RangeMin} inputProps={{max: 100, min:1}} type="number" margin="normal" fullWidth id="RangeMin" label="RangeMin" name="RangeMin"/>
                             <FormControlLabel disabled control={<Checkbox defaultChecked />} label="English" />

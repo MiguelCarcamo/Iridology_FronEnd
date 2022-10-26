@@ -29,11 +29,13 @@ function AnalysisCustomer() {
   const [rptOrgans, setrptOrgans] = useState([]);
   const [varlabes, setVarlabes] = useState([]);
   const [varValues, setVarValues] = useState([]);
+  const [varLenguage, setVarLenguage] = useState("en");
   const [rowData, setRowData] = useState([]);
   const [rowDataUpdate, setrowDataUpdate] = useState(false);
   const [rowData2, setRowData2] = useState([]);
   const [rowData3, setRowData3] = useState([]);
   const [rowData4, setRowData4] = useState([]);
+  const [rowData5, setRowData5] = useState([]);
   const [open, setOpen] = useState(false);
   const [open2, setOpen2] = useState(false);
   const [open3, setOpen3] = useState(false);
@@ -47,6 +49,7 @@ function AnalysisCustomer() {
   const url4 = 'https://iridologyapirest.herokuapp.com/api/Analysis/update';
   const url5 = 'https://iridologyapirest.herokuapp.com/api/AnalysisSistems/';
   const url6 = 'https://iridologyapirest.herokuapp.com/api/AnalysisBodyOrgans/';
+  const url7 = 'https://libretranslate.de/languages';
   const [columns, setColumns] = useState([
     { field: 'id', headerName: 'ID', width: 50 },
     { field: 'Patient', headerName: 'Name Patient', width: 400 },
@@ -72,6 +75,16 @@ function AnalysisCustomer() {
         const data = await fetch(url2);
         const data1 = await data.json();
         setRowData(data1.filter(i=> i.IDUser == cookies.get('IDUser')));
+    } catch (error) {
+        console.log(error); 
+    }
+  }
+  const UpdateLanguages = async () => {
+    try {
+      const data = await fetch(url7);
+      const data1 = await data.json();
+      data1.forEach((data1, index) => data1.id = index + 1);
+      setRowData5(data1);
     } catch (error) {
         console.log(error); 
     }
@@ -113,6 +126,7 @@ function AnalysisCustomer() {
       swal(data1['msj']);
     }
   }
+
   const EnviarDatos2 = async () => {
     var url = 'https://iridologyapirest.herokuapp.com/api/Analysis/update'
     const data = await fetch(url, {
@@ -186,6 +200,9 @@ function AnalysisCustomer() {
   }, []);
   useEffect(() => {
     UpdateAnalysis();
+  }, []);
+  useEffect(() => {
+    UpdateLanguages();
   }, []);
   useEffect(() => {
     UpdateSystems();
@@ -269,8 +286,6 @@ function AnalysisCustomer() {
                         <TableCell align="center">Value</TableCell>
                         <TableCell align="center">Symptoms</TableCell>
                         <TableCell align="center">Findings</TableCell>
-                        <TableCell align="center">Foods</TableCell>
-                        <TableCell align="center">Not Foods</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
@@ -285,8 +300,6 @@ function AnalysisCustomer() {
                         <TableCell align="left">{row.bodyorgansvalue}</TableCell>
                         <TableCell align="left">{String(row.symptoms).replace(/[{}"]/g, '')}</TableCell>
                         <TableCell align="left">{String(row.findings).replace(/[{}"]/g, '')}</TableCell>
-                        <TableCell align="left">{String(row.foods).replace(/[{}"]/g, '')}</TableCell>
-                        <TableCell align="left">{String(row.notfoods).replace(/[{}"]/g, '')}</TableCell>
                       </TableRow>
                       :false
                     )):false}
@@ -299,7 +312,25 @@ function AnalysisCustomer() {
             :false}
     </Dialog>
     <Dialog open={open3} onClose={handleClose3} fullWidth maxWidth="md">
-      <DialogTitle id="max-width-dialog-title">Report</DialogTitle>
+      <DialogTitle id="max-width-dialog-title">
+        Report
+        <FormControl sx={ {float: "right"} }>
+        <InputLabel id="demo-simple-select-label">Lenguage</InputLabel>
+        <Select
+          labelId="demo-simple-select-label"
+          id="demo-simple-select"
+          value={varLenguage}
+          label="Age"
+          onChange={e => setVarLenguage(e.target.value)}
+        >
+          {rowData3?
+            rowData5.map((option) =>
+              <MenuItem key={option.id} value={option.code}>{option.name}</MenuItem>
+              ):false
+            }
+        </Select>
+      </FormControl>
+      </DialogTitle>
       <FormControl>
         <InputLabel id="demo-simple-select-label">Sistems</InputLabel>
         <Select
@@ -361,8 +392,6 @@ function AnalysisCustomer() {
           <TableHead>
             <TableRow>
               <TableCell>Findings</TableCell>
-              <TableCell align="center">Foods</TableCell>
-              <TableCell align="center">Not Foods</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -374,8 +403,6 @@ function AnalysisCustomer() {
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
             >
               <TableCell align="left">{String(row.findings).replace(/[{}"]/g, '')}</TableCell>
-              <TableCell align="left">{String(row.foods).replace(/[{}"]/g, '')}</TableCell>
-              <TableCell align="left">{String(row.notfoods).replace(/[{}"]/g, '')}</TableCell>
             </TableRow>
             :false
           )):false}
