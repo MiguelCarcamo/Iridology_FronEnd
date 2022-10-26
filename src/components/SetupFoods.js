@@ -155,7 +155,7 @@ function SetupFoods() {
                                 }}
                                 value={SetupSystems}
                                 options={(Systems)?Systems.map((option) =>option.id + '-' + option.setupsystems):[]}
-                                renderInput={(params) => <TextField {...params} label="Body Organs" />}
+                                renderInput={(params) => <TextField {...params} label="Systems" />}
                             />
                             <TextField value={RangeMax} onChange={e => setRangeMax(e.target.value)} inputProps={{max: 100, min:1}} type="number" margin="normal" fullWidth id="RangeMax" label="RangeMax" name="RangeMax"/>
                             <TextField value={RangeMin} onChange={e => setRangeMin(e.target.value)} inputProps={{max: 100, min:1}} type="number" margin="normal" fullWidth id="RangeMin" label="RangeMin" name="RangeMin"/>
