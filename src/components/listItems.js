@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import SettingsIcon from '@mui/icons-material/Settings';
 
 import List from '@mui/material/List';
@@ -16,11 +16,15 @@ import AnalyticsOutlinedIcon from '@mui/icons-material/AnalyticsOutlined';
 import InsightsOutlinedIcon from '@mui/icons-material/InsightsOutlined';
 import AdminPanelSettingsOutlinedIcon from '@mui/icons-material/AdminPanelSettingsOutlined';
 import LowPriorityOutlinedIcon from '@mui/icons-material/LowPriorityOutlined';
+import SupervisedUserCircleIcon from '@mui/icons-material/SupervisedUserCircle';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
 import { useNavigate } from 'react-router-dom';
+import Cookies from 'universal-cookie';
 
+const cookies = new Cookies();
 
 export default function ListItem() {
+  const [rowData, setRowData] = useState();
   const navigate = useNavigate();
   const [open, setOpen] = useState(true);
   const handleClick = () => {
@@ -29,7 +33,23 @@ export default function ListItem() {
   const [open2, setOpen2] = useState(true);
   const handleClick2 = () => {
     setOpen2(!open2);
-  };  
+  };
+  const UpdateData = async () =>  {
+    try {
+        const data = await fetch("https://iridologyapirest.herokuapp.com/api/user/Display/" + cookies.get('IDUser'));
+        const data1 = await data.json();
+        setRowData(data1);
+    } catch (error) {
+        console.log(error); 
+    }
+}
+// EN ESTA SECCION CONTIENE TODAS LAS USEEFFECT QUE REQUERIMOS PARA EL FUNCIONAMIENTO
+useEffect(() => {
+  const run = async () =>
+      await UpdateData();
+  run();
+}, []);
+  
 return(
   <React.Fragment>
     <ListItemButton onClick={handleClick}>
@@ -40,54 +60,27 @@ return(
         {open ? <ExpandLess /> : <ExpandMore />}
       </ListItemButton>
       <Collapse in={open} timeout="auto" unmountOnExit>
-        <List onClick={() => navigate('/Main/SetupSystems')} component="div" disablePadding>
-          <ListItemButton sx={{ pl: 4 }}>
-            <ListItemIcon>
-              <BoyOutlinedIcon />
-            </ListItemIcon>
-            <ListItemText primary="Body Systems" />
-          </ListItemButton>
-        </List>
-        <List onClick={() => navigate('/Main/SetupOrgans')} component="div" disablePadding>
-          <ListItemButton sx={{ pl: 4 }}>
-            <ListItemIcon>
-              <FavoriteOutlinedIcon />
-            </ListItemIcon>
-            <ListItemText primary="Body Organs" />
-          </ListItemButton>
-        </List>
-        <List onClick={() => navigate('/Main/SetupFindings')} component="div" disablePadding>
-          <ListItemButton sx={{ pl: 4 }}>
-            <ListItemIcon>
-              <HealthAndSafetyOutlinedIcon />
-            </ListItemIcon>
-            <ListItemText primary="Findings" />
-          </ListItemButton>
-        </List>
-        <List onClick={() => navigate('/Main/SetupSymptoms')} component="div" disablePadding>
-          <ListItemButton sx={{ pl: 4 }}>
-            <ListItemIcon>
-              <AddAlertOutlinedIcon />
-            </ListItemIcon>
-            <ListItemText primary="Symptoms" />
-          </ListItemButton>
-        </List>
-        <List onClick={() => navigate('/Main/SetupFoods')} component="div" disablePadding>
-          <ListItemButton sx={{ pl: 4 }}>
-            <ListItemIcon>
-              <RestaurantIcon />
-            </ListItemIcon>
-            <ListItemText primary="Foods" />
-          </ListItemButton>
-        </List>
-        <List onClick={() => navigate('/Main/SetupRanges')} component="div" disablePadding>
-          <ListItemButton sx={{ pl: 4 }}>
-            <ListItemIcon>
-              <LowPriorityOutlinedIcon />
-            </ListItemIcon>
-            <ListItemText primary="Ranges" />
-          </ListItemButton>
-        </List>
+      {rowData?
+      rowData.reverse().map((i) => i.Seccion == 1?
+      <List key={i.id} onClick={() => navigate(i.navigate.toString())} component="div" disablePadding hidden={!i.access} >
+        <ListItemButton sx={{ pl: 4 }}>
+          <ListItemIcon>
+            {{
+              'Setup User': <SupervisedUserCircleIcon />,
+              'Body Systems': <BoyOutlinedIcon />,
+              'Body Organs': <FavoriteOutlinedIcon />,
+              'Findings': <HealthAndSafetyOutlinedIcon />,
+              'Symptoms': <AddAlertOutlinedIcon />,
+              'Foods': <RestaurantIcon />,
+              'Ranges': <LowPriorityOutlinedIcon />,
+            }[i.namedisplay.toString()]
+            } 
+          </ListItemIcon>
+          <ListItemText primary={i.namedisplay.toString()} />
+        </ListItemButton>
+      </List>
+      :false)
+      :false}
       </Collapse>
       <ListItemButton onClick={handleClick2}>
         <ListItemIcon>
@@ -97,30 +90,23 @@ return(
         {open2 ? <ExpandLess /> : <ExpandMore />}
       </ListItemButton>
       <Collapse in={open2} timeout="auto" unmountOnExit>
-        <List onClick={() => navigate('/Main/AnalysisPatient')} component="div" disablePadding>
+        {rowData?
+        rowData.reverse().map((i) => i.Seccion == 2?
+        <List key={i.id} onClick={() => navigate(i.navigate.toString())} component="div" disablePadding hidden={!i.access}>
           <ListItemButton sx={{ pl: 4 }}>
             <ListItemIcon>
-              <AdminPanelSettingsOutlinedIcon />
+              {{
+                'Patients': <AdminPanelSettingsOutlinedIcon />,
+                'Analysis': <InsightsOutlinedIcon />,
+                'My Analyzes': <InsightsOutlinedIcon />,
+              }[i.namedisplay.toString()]
+              } 
             </ListItemIcon>
-            <ListItemText primary="Patients" />
+            <ListItemText primary={i.namedisplay.toString()} />
           </ListItemButton>
         </List>
-        <List onClick={() => navigate('/Main/Analysis')} component="div" disablePadding>
-          <ListItemButton sx={{ pl: 4 }}>
-            <ListItemIcon>
-              <InsightsOutlinedIcon />
-            </ListItemIcon>
-            <ListItemText primary="Analysis" />
-          </ListItemButton>
-        </List>
-        <List onClick={() => navigate('/Main/MyAnalyzes')} component="div" disablePadding>
-          <ListItemButton sx={{ pl: 4 }}>
-            <ListItemIcon>
-              <InsightsOutlinedIcon />
-            </ListItemIcon>
-            <ListItemText primary="My Analyzes" />
-          </ListItemButton>
-        </List>
+        :false)
+        :false}
       </Collapse>
   </React.Fragment>
   );

@@ -64,8 +64,8 @@ export default function SignInSide() {
       }else{
         // console.log(responseJson);
         if(responseJson.status == "1"){
-          cookies.set('IDUser', responseJson.idinfouser, {path: "/"});
-          cookies.set('IDTypeUser', responseJson.idtypeuser, {path: "/"});
+          cookies.set('IDUser', responseJson.id, {path: "/"});
+          cookies.set('IDTypeUser', responseJson.typeuser, {path: "/"});
           cookies.set('UserName', responseJson.username, {path: "/"});
           cookies.set('Status', responseJson.status, {path: "/"});
           cookies.set('User', responseJson.User, {path: "/"});

@@ -22,6 +22,7 @@ import Analysis from "../components/Analysis";
 import AnalysisCustomer from "../components/AnalysisCustomer";
 import SetupRanges from "../components/SetupRanges";
 import SetupFoods from "../components/SetupFoods";
+import User from "../components/User";
 import { IconButton } from '@mui/material';
 import CachedIcon from '@mui/icons-material/Cached';
 
@@ -79,6 +80,7 @@ export default function Main() {
                       'Analysis': <Analysis />,
                       'MyAnalyzes': <AnalysisCustomer />,
                       'SetupFoods': <SetupFoods />,
+                      'User': <User />,
                     }[ruta]
                   }
                   

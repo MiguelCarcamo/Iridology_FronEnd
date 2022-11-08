@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import {ClockLoader, RingLoader , BounceLoader } from "react-spinners";
 import InformationBox from './InformationBox';
-import { Grid, Container, Box, Typography, TextField, AppBar, Toolbar, IconButton, Alert } from '@mui/material';
+import { Grid, Container, Box, Typography, TextField, AppBar, Toolbar, IconButton, Alert, FormControl, Card, Select, MenuItem, CardMedia, CardContent, CardActions } from '@mui/material';
 import { ButtonGroup, Button  } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import CloseIcon from '@mui/icons-material/Close';
@@ -11,7 +11,7 @@ import AssignmentIcon from '@mui/icons-material/Assignment';
 
 import Dialog from '@mui/material/Dialog';
 import Paper from '@mui/material/Paper';
-
+import SummarizeIcon from '@mui/icons-material/Summarize';
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
@@ -19,14 +19,21 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import swal from 'sweetalert';
 import Cookies from 'universal-cookie';
 import { useNavigate } from 'react-router-dom';
-const cookies = new Cookies();
 
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+const cookies = new Cookies();
 
 function Analysis() {
 const navigate = useNavigate();
 let [loading, setLoading] = useState(false);
 let [AssiBtn, setAssiBtn] = useState(true);
 let [UpdBtn, setUpdBtn] = useState(true);
+let [rptNew, setrptNew] = useState(true);
 const [New, setNew] = useState(0);
 const [DataValue, setDataValue] = useState([]);
 const [CantOrg, setCantOrg] = useState(0);
@@ -38,8 +45,14 @@ const [all, setAll] = useState(0);
 const [rowData, setRowData] = useState([]);
 const [rowData2, setRowData2] = useState([]);
 const [rowData3, setRowData3] = useState([]);
+const [rowData4, setRowData4] = useState([]);
+const [rowData5, setRowData5] = useState([]);
 const [open, setOpen] = useState(false);
-const [table, setTable] = useState();
+const [open2, setOpen2] = useState(false);
+const [rowAnalysisBodyOrgan, setRowAnalysisBodyOrgan] = useState([]);
+const [ReportCuston, setReportCuston] = useState("00.00-100.00");
+const [RangeMax, setRangeMax] = useState("");
+const [RangeMin, setRangeMin] = useState("");
 const [columns, setColumns] = useState([
   { field: 'id', headerName: 'ID', width: 50 },
   { field: 'Patient', headerName: 'Name Patient', width: 400 },
@@ -47,12 +60,16 @@ const [columns, setColumns] = useState([
   { field: 'Gender', headerName: 'Gender', width: 100 },
   { field: 'CreateDate', headerName: 'CreateDate', width: 200 },
 ]);
+const url = 'https://iridologyapirest.herokuapp.com/api/SetupBodyOrgans/';
 const url1 = 'https://iridologyapirest.herokuapp.com/api/Analysis/';
 const url2 = 'https://iridologyapirest.herokuapp.com/api/AnalysisSistems/';
 const url3 = 'https://iridologyapirest.herokuapp.com/api/AnalysisBodyOrgans/';
+const url6 = 'https://iridologyapirest.herokuapp.com/api/AnalysisBodyOrgans/';
 
 const handleOpen = () => setOpen(true);
 const handleClose = () => setOpen(false);
+const handleOpen2 = () => setOpen2(true);
+const handleClose2 = () => setOpen2(false);
 const UpdateAnalysis = async () =>  {
   try {
       const data = await fetch(url1);
@@ -152,7 +169,7 @@ const PrepareData = async (id, sistems, name, value) => {
 }
 const SaveData = async() => {
   setLoading(true);
-  if(CantOrgPro < CantOrg){
+  if(false){
     swal("Incomplete Analysis", "You must complete the form!", "warning");
   }else{
     var url = 'https://iridologyapirest.herokuapp.com/api/AnalysisBodyOrgans/update'
@@ -194,25 +211,70 @@ const SaveData = async() => {
   swal("Complete", "Your file is safe :)", "success");
   UpdateAnalysis();
 }
+const UpdateAnalysisBodyOrgans = async () =>  {
+  try {
+      if (Analysis != false){
+        const data = await fetch(url6 + Analysis.id);
+        const data1 = await data.json();
+        setRowAnalysisBodyOrgan(data1);
+      }
+  } catch (error) {
+      console.log(error); 
+  }
+}
+const UpdateBodyOrgans = async () =>  {
+  try {
+      const data = await fetch(url);
+      const data1 = await data.json();
+      setRowData4(data1);
+  } catch (error) {
+     console.log(error); 
+  }
+}
+const UpdateDataRange = async () =>  {
+  try {
+      const data = await fetch('https://iridologyapirest.herokuapp.com/api/SetupRange/');
+      const data1 = await data.json();
+      setRowData5(data1);
+  } catch (error) {
+     console.log(error); 
+  }
+}
+
 useEffect(() => {
   UpdateAnalysis();
+  UpdateBodyOrgans();
+  UpdateDataRange();
 }, []);
 useEffect(() => {
   UpdateSystems();
   UpdateOrgans();
+  UpdateAnalysisBodyOrgans();
   if(Analysis.Status == 'IN PROCESS'){
     setUpdBtn(false);
     setAssiBtn(true);
+    setrptNew(true);
   }
   if(Analysis.Status == 'NEW'){
     setAssiBtn(false);
     setUpdBtn(true);
+    setrptNew(true);
   }
-  if(Analysis.Status == 'COMPLETE' || Analysis.Status == 'DELETE'){
+  if(Analysis.Status == 'DELETE'){
     setUpdBtn(true);
     setAssiBtn(true);
+    setrptNew(true);
+  }
+  if(Analysis.Status == 'COMPLETE'){
+    setUpdBtn(true);
+    setAssiBtn(true);
+    setrptNew(false);
   }
 }, [Analysis]);
+useEffect(() => {
+  setRangeMin(ReportCuston.split('-')[0]);
+  setRangeMax(ReportCuston.split('-')[1]);
+}, [ReportCuston]);
 
   return (
     <div style={{ height: 900, width: '100%' }}>
@@ -227,6 +289,7 @@ useEffect(() => {
       <ButtonGroup variant="contained" aria-label="outlined primary button group">
         <Button disabled={AssiBtn} onClick={UpdateAssigned} variant="contained" color="success" startIcon={<AssignmentIcon />} > Assiganed</Button>
         <Button disabled={UpdBtn} onClick={handleOpen} variant="contained" color="primary" startIcon={<RefreshIcon />} > Update</Button>
+        <Button disabled={rptNew} onClick={handleOpen2} variant="contained" color="primary" startIcon={<RefreshIcon />} > Report</Button>
       </ButtonGroup>
       {rowData?
         <DataGrid 
@@ -280,6 +343,93 @@ useEffect(() => {
             )
             :false}
           </Box>
+      </Dialog>
+      <Dialog fullScreen open={open2} onClose={handleClose2} >
+        <AppBar sx={{ position: 'relative' }}>
+          <Toolbar>
+            <IconButton
+              edge="start"
+              color="inherit"
+              onClick={handleClose2}
+              aria-label="close"
+            >
+              <CloseIcon />
+            </IconButton>
+            <ClockLoader color="#ffffff" loading={loading} size={50} />
+            <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
+              Custon Report
+            </Typography>
+            <FormControl>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={ReportCuston}
+                label="Age"
+                onChange={(e)=> setReportCuston(e.target.value)}
+              >
+                <MenuItem value="00.00-100.00">All Info</MenuItem>
+                {rowData5?
+                rowData5.map((i)=>(
+                  <MenuItem key={i.id} value={i.rangemin + '-' + i.rangemax}>{i.setuprange}</MenuItem>
+                )):false
+                }
+              </Select>
+            </FormControl>
+          </Toolbar>
+        </AppBar>
+        <Box component="form" noValidate sx={{ mt: 1 }}>
+        <Card sx={{ maxWidth: '100%' }}>
+          <CardContent>
+            <br/>
+            <br/>
+            <Typography gutterBottom variant="h5" component="div">
+              {Analysis.Patient}
+            </Typography>
+            <Table aria-label="simple table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell style={{ width: 160 }}>BodyOrgans</TableCell>
+                    <TableCell align="center">Symptoms</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                {rowAnalysisBodyOrgan?
+                rowAnalysisBodyOrgan.map((row) => (
+                  (String(row.symptoms).replace(/[{}"]/g, '') != 'null' && row.bodyorgansvalue <= RangeMax && row.bodyorgansvalue >= RangeMin) ?
+                  <TableRow
+                    key={row.id}
+                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                  >
+                    <TableCell align="left">{row.bodyorgans+"("+row.bodyorgansvalue+")"}</TableCell>
+                    <TableCell align="left">{String(row.symptoms).replace(/[{}"]/g, '')}</TableCell>
+                  </TableRow>
+                  :false
+                )):false}
+                </TableBody>
+              </Table>
+              <Table aria-label="simple table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell align="left">Findings</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                {rowAnalysisBodyOrgan?
+                rowAnalysisBodyOrgan.map((row) => (
+                  (String(row.findings).replace(/[{}"]/g, '') != 'null' && row.bodyorgansvalue <= RangeMax && row.bodyorgansvalue >= RangeMin) ?
+                  <TableRow
+                    key={row.id}
+                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                  >
+                    <TableCell align="left">{String(row.findings).replace(/[{}"]/g, '')}</TableCell>
+                  </TableRow>
+                  :false
+                )):false}
+              </TableBody>
+              </Table>
+          </CardContent>
+        </Card>
+        </Box>
       </Dialog>
     </div>
   )
