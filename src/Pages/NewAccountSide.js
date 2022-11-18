@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import md5 from 'md5';
 import swal from 'sweetalert';
 import { NavLink, useNavigate } from 'react-router-dom';
-
+import {ClockLoader, RingLoader , BounceLoader } from "react-spinners";
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -21,7 +21,8 @@ const theme = createTheme();
 
 export default function NewAccountSide() {
     const navigate = useNavigate();
-
+    const url3 = 'https://iridologyapirest.herokuapp.com/api/user/add';
+    let [loading, setLoading] = useState(false);
     const [state , setState] = useState({
         Name : "",
         LastName : "",
@@ -39,25 +40,29 @@ export default function NewAccountSide() {
         )
     }
     const CreateAccount = async ()=> {
-        await fetch('https://iridologyapirest.herokuapp.com/api/user/add', {
+        setLoading(true);
+        await fetch(url3, {
             method: 'post',
             headers: {'Content-Type':'application/json'},
             body: JSON.stringify([{
+                "idinfouser": "0",
                 "userPassword": md5(state.Password),
-                "TypeUser": 1,
+                "TypeUser": "1",
                 "UserName": state.Name,
                 "UserLastName": state.LastName,
                 "UserMail": state.email,
                 "UserPhone": state.Phone,
                 "UserCountry": state.Country,
+                "Status": "1",
                 "UserLenguage": "ENG"
             }])
         })
        .then((response) => response.json())
        .then((responseJson) => {
             swal(responseJson['msj']);
-            if(responseJson['msj'] == 'Accion Realizada Correctamente')
+            if(responseJson['msj'] == 'Accion Realizada Correctamente'){
                 navigate('/');
+            }
        });
     }
   return (
@@ -107,6 +112,7 @@ export default function NewAccountSide() {
                             </Grid>
                         </Grid>
                     </Box>
+                    <RingLoader color="#36d7b7" loading={loading} size={100} />
                 </Box>
             </Grid>
         </Grid>

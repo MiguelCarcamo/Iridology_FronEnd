@@ -86,6 +86,7 @@ function User() {
             setPhone(rowDataEdi.userphone);
             setPasswordOld(rowDataEdi.Password);
             setTypeUser(rowDataEdi.idtypeuser);
+            rowDataEdi.status == 'Active' ? setStatus("1"):setStatus("0");
             setOpen(true);
         }
     }
@@ -214,7 +215,7 @@ function User() {
                         <TextField value={Phone} onChange={e => setPhone(e.target.value)} margin="normal" required fullWidth id="Phone" label="Phone" name="Phone" autoComplete="Phone" />
                         <FormControlLabel disabled control={<Checkbox defaultChecked />} label="English" />
                         <FormControlLabel onChange={(e) => e.target.checked? setPassword("1234"):setPassword(PasswordOld)} control={<Checkbox />} label="Reset Password" />
-                        <FormControlLabel onChange={(e) => e.target.checked? setStatus("1"):setStatus("0")} control={<Checkbox defaultChecked />} label="Activo" />
+                        <FormControlLabel value={Status} onChange={(e) => e.target.checked? setStatus("1"):setStatus("0")} control={<Checkbox defaultChecked={Status == '1'?true:false} />} label="Activo" />
                         {(Action==0) ?
                         <Button onClick={CU} fullWidth variant="contained" color="success" sx={{ mt: 3, mb: 2 }} >Create</Button>                            
                         :
