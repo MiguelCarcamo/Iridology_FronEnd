@@ -38,9 +38,9 @@ function SetupFindings() {
     const [Gender, setGender] = useState();
     const [Weight, setWeight] = useState();
 
-    const url = 'https://iridologyapirest.herokuapp.com/api/AnalysisPatient/';
-    const url2 = 'https://iridologyapirest.herokuapp.com/api/AnalysisPatient/add';
-    const url3 = 'https://iridologyapirest.herokuapp.com/api/AnalysisPatient/update';
+    const url = '/api/AnalysisPatient/';
+    const url2 = '/api/AnalysisPatient/add';
+    const url3 = '/api/AnalysisPatient/update';
     const [rowData, setRowData] = useState();
     const [columns, setColumns] = useState([
         { field: 'id', headerName: 'ID', width: 50 },

@@ -38,9 +38,9 @@ function SetupOrgans() {
     const [RangeMin, setRangeMin] = useState(0);
     const [level, setLevel] = useState("High");
 
-    const url = 'https://iridologyapirest.herokuapp.com/api/SetupBodyOrgans/';
-    const url3 = 'https://iridologyapirest.herokuapp.com/api/SetupBodyOrgans/add';
-    const url4 = 'https://iridologyapirest.herokuapp.com/api/SetupBodyOrgans/update';
+    const url = '/api/SetupBodyOrgans/';
+    const url3 = '/api/SetupBodyOrgans/add';
+    const url4 = '/api/SetupBodyOrgans/update';
     const [rowData, setRowData] = useState();
     const [columns, setColumns] = useState([
         { field: 'id', headerName: 'ID', width: 100 },
@@ -56,7 +56,7 @@ function SetupOrgans() {
         { field: 'Lenguage', headerName: 'Lenguage', width: 150 },
       ]);
     const handleClose = () => setOpen(false);
-    const url2 = 'https://iridologyapirest.herokuapp.com/api/SetupSystems/';
+    const url2 = '/api/SetupSystems/';
     const [rowSystems, setRowSystems] = useState();
     const [Action, setAction] = useState(0);
     const [Lista, setLista] = useState();

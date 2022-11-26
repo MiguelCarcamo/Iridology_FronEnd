@@ -2,6 +2,7 @@
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
+  "proxy": "http://localhost:5000",
   "dependencies": {
     "@coreui/react-chartjs": "^2.1.0",
     "@emotion/react": "^11.8.2",
@@ -24,7 +25,7 @@
     "react-dom": "^18.0.0",
     "react-phone-input-2": "^2.15.0",
     "react-router-dom": "^6.3.0",
-    "react-scripts": "5.0.0",
+    "react-scripts": "^5.0.0",
     "react-spinners": "^0.13.4",
     "react-vis": "^1.11.7",
     "sweetalert": "^2.1.2",

@@ -28,9 +28,9 @@ function SetupSymptoms() {
     const [Symptoms, setSymptoms] = useState("");
     const [RangeMax, setRangeMax] = useState(0);
     const [RangeMin, setRangeMin] = useState(0);
-    const url = 'https://iridologyapirest.herokuapp.com/api/SetupSymptoms/';
-    const url3 = 'https://iridologyapirest.herokuapp.com/api/SetupSymptoms/add';
-    const url4 = 'https://iridologyapirest.herokuapp.com/api/SetupSymptoms/update';
+    const url = '/api/SetupSymptoms/';
+    const url3 = '/api/SetupSymptoms/add';
+    const url4 = '/api/SetupSymptoms/update';
     const [rowData, setRowData] = useState();
     const [columns, setColumns] = useState([
         { field: 'id', headerName: 'ID', width: 50 },
@@ -41,7 +41,7 @@ function SetupSymptoms() {
         { field: 'Lenguage', headerName: 'Lenguage', width: 75 },
       ]);
     const handleClose = () => setOpen(false);
-    const url2 = 'https://iridologyapirest.herokuapp.com/api/SetupBodyOrgans/';
+    const url2 = '/api/SetupBodyOrgans/';
     const [rowBodyOrgans, setRowBodyOrgans] = useState();
     const [Action, setAction] = useState(0);
     const [Lista, setLista] = useState();
@@ -108,7 +108,7 @@ function SetupSymptoms() {
        });
     }
     const EnviarDatos2 = async () => {
-        var url = 'https://iridologyapirest.herokuapp.com/api/SetupSymptoms/delete'
+        var url = '/api/SetupSymptoms/delete'
         const data = await fetch(url, {
           method: 'delete',
           headers: {'Content-Type':'application/json'},

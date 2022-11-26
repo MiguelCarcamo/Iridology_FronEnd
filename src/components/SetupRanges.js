@@ -32,9 +32,9 @@ function SetupRanges() {
         { field: 'rangemin', headerName: 'Range Min', width: 100 },
         { field: 'rangemax', headerName: 'Range Max', width: 100 },
       ]);
-    const url = 'https://iridologyapirest.herokuapp.com/api/SetupRange/';
-    const url3 = 'https://iridologyapirest.herokuapp.com/api/SetupRange/add';
-    const url4 = 'https://iridologyapirest.herokuapp.com/api/SetupRange/update';
+    const url = '/api/SetupRange/';
+    const url3 = '/api/SetupRange/add';
+    const url4 = '/api/SetupRange/update';
 
     // EN ESTA SECCION SE CONTIENE TODAS LAS FUNCIONES
     const handleClose = () => setOpen(false);
