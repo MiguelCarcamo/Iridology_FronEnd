@@ -22,10 +22,6 @@ import img from './img/test.jpg'
 
 const theme = createTheme();
 const cookies = new Cookies();
-const override:CSSProperties = {
-  display: "block",
-  margin: "0 auto",
-};
 
 export default function SignInSide() {
   let [loading, setLoading] = useState(false);
@@ -48,7 +44,7 @@ export default function SignInSide() {
     setLoading(true);
     //swal("Clave incorrecta");
     // console.log(md5(state.Password));
-    await fetch('https://iridologyapirest.herokuapp.com/api/user/login/', {
+    await fetch('https://208.109.191.54/api/user/login/', {
       method: 'post',
       headers: {'Content-Type':'application/json'},
       body: JSON.stringify([{
@@ -129,8 +125,8 @@ export default function SignInSide() {
                             </Grid>
                         </Grid>
                     </Box>
+                    <RingLoader color="#36d7b7" loading={loading} size={100} />
                 </Box>
-                    <RingLoader color="#36d7b7" loading={loading} cssOverride={override} size={100} />
             </Grid>
         </Grid>
     </ThemeProvider>

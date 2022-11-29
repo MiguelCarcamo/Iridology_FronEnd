@@ -20,7 +20,7 @@ import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 
 function SetupSystemps() {
-    const url = 'https://iridologyapirest.herokuapp.com/api/SetupSystems/';
+    const url = 'https://208.109.191.54/api/SetupSystems/';
     const [open, setOpen] = useState(false);
     const [rowData, setRowData] = useState([]);
     const [rowDataEdi, setRowDataEdi] = useState([]);
@@ -75,7 +75,7 @@ function SetupSystemps() {
         }
     }
     const Create = async ()=> {
-        await fetch('https://iridologyapirest.herokuapp.com/api/SetupSystems/add', {
+        await fetch('https://208.109.191.54/api/SetupSystems/add', {
             method: 'post',
             headers: {'Content-Type':'application/json'},
             body: JSON.stringify([{
@@ -96,7 +96,7 @@ function SetupSystemps() {
        });
     }
     const update = async ()=> {
-        await fetch('https://iridologyapirest.herokuapp.com/api/SetupSystems/update', {
+        await fetch('https://208.109.191.54/api/SetupSystems/update', {
             method: 'put',
             headers: {'Content-Type':'application/json'},
             body: JSON.stringify([{

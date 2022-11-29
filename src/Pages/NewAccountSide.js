@@ -21,7 +21,7 @@ const theme = createTheme();
 
 export default function NewAccountSide() {
     const navigate = useNavigate();
-    const url3 = 'https://iridologyapirest.herokuapp.com/api/user/add';
+    const url3 = 'https://208.109.191.54/api/user/add';
     let [loading, setLoading] = useState(false);
     const [state , setState] = useState({
         Name : "",

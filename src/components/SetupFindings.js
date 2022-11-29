@@ -28,9 +28,9 @@ function SetupFindings() {
     const [RangeMax, setRangeMax] = useState(0);
     const [RangeMin, setRangeMin] = useState(0);
 
-    const url = 'https://iridologyapirest.herokuapp.com/api/SetupFindings/';
-    const url3 = 'https://iridologyapirest.herokuapp.com/api/SetupFindings/add';
-    const url4 = 'https://iridologyapirest.herokuapp.com/api/SetupFindings/update';
+    const url = 'https://208.109.191.54/api/SetupFindings/';
+    const url3 = 'https://208.109.191.54/api/SetupFindings/add';
+    const url4 = 'https://208.109.191.54/api/SetupFindings/update';
     const [rowData, setRowData] = useState();
     const [columns, setColumns] = useState([
         { field: 'id', headerName: 'ID', width: 50 },
@@ -41,7 +41,7 @@ function SetupFindings() {
         { field: 'Lenguage', headerName: 'Lenguage', width: 75 },
       ]);
     const handleClose = () => setOpen(false);
-    const url2 = 'https://iridologyapirest.herokuapp.com/api/SetupBodyOrgans/';
+    const url2 = 'https://208.109.191.54/api/SetupBodyOrgans/';
     const [rowBodyOrgans, setRowBodyOrgans] = useState();
     const [Action, setAction] = useState(0);
     const [Lista, setLista] = useState();
@@ -68,7 +68,7 @@ function SetupFindings() {
         }
     }
     const EnviarDatos2 = async () => {
-        var url = 'https://iridologyapirest.herokuapp.com/api/SetupFindings/delete'
+        var url = 'https://208.109.191.54/api/SetupFindings/delete'
         const data = await fetch(url, {
           method: 'delete',
           headers: {'Content-Type':'application/json'},

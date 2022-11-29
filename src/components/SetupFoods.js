@@ -39,9 +39,9 @@ function SetupFoods() {
         { field: 'RangeMin', headerName: 'Range Max', width: 100 },
         { field: 'Lenguage', headerName: 'Lenguage', width: 150 },
         ]);
-    const url = 'https://iridologyapirest.herokuapp.com/api/SetupFoods/';
-    const url3 = 'https://iridologyapirest.herokuapp.com/api/SetupFoods/add';
-    const url4 = 'https://iridologyapirest.herokuapp.com/api/SetupFoods/update';
+    const url = 'https://208.109.191.54/api/SetupFoods/';
+    const url3 = 'https://208.109.191.54/api/SetupFoods/add';
+    const url4 = 'https://208.109.191.54/api/SetupFoods/update';
     // EN ESTA SECCION SE CONTIENE TODAS LAS FUNCIONES
     const handleClose = () => setOpen(false);
     const handleOpenNew = () => { 
@@ -101,7 +101,7 @@ function SetupFoods() {
     }
     const UpdateSystems = async () =>  {
         try {
-            const data = await fetch("https://iridologyapirest.herokuapp.com/api/SetupSystems/");
+            const data = await fetch("https://208.109.191.54/api/SetupSystems/");
             const data1 = await data.json();
             setSystems(data1);
         } catch (error) {

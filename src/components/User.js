@@ -44,9 +44,9 @@ function User() {
     const [Phone, setPhone] = useState("");
     const [TypeUser, setTypeUser] = useState("");
     const [Status, setStatus] = useState("1");
-    const url = 'https://iridologyapirest.herokuapp.com/api/user/';
-    const url3 = 'https://iridologyapirest.herokuapp.com/api/user/add';
-    const url4 = 'https://iridologyapirest.herokuapp.com/api/user/update/';
+    const url = 'https://208.109.191.54/api/user/';
+    const url3 = 'https://208.109.191.54/api/user/add';
+    const url4 = 'https://208.109.191.54/api/user/update/';
     const [columns, setColumns] = useState([
         { field: 'id', headerName: 'ID', width: 50 },
         { field: 'typeuser', headerName: 'TypeUser', width: 160 },
@@ -109,7 +109,7 @@ function User() {
     const UpdateDisplay = async () =>  {
         try {
             if(rowDataEdi){
-                const data = await fetch("https://iridologyapirest.herokuapp.com/api/user/Display/" + rowDataEdi.id);
+                const data = await fetch("https://208.109.191.54/api/user/Display/" + rowDataEdi.id);
                 const data1 = await data.json();
                 setDisplay(data1);
             }
@@ -148,7 +148,7 @@ function User() {
     const PrepareData = async (id, value) => {
         // console.log(id.split('-')[0]);
         // console.log(value);
-        await fetch('https://iridologyapirest.herokuapp.com/api/user/Display/', {
+        await fetch('https://208.109.191.54/api/user/Display/', {
             method: 'put',
             headers: {'Content-Type':'application/json'},
             body: JSON.stringify([{
