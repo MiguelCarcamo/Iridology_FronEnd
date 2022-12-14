@@ -44,11 +44,12 @@ function AnalysisCustomer() {
   const [Patient , setPatient] = useState(0);
   let [CancelBtn, setCancelBtn] = useState(true);
   let [ReportBtn, setReportBtn] = useState(true);
-  const url3 = 'https://iridologo.org/api/AnalysisPatient/';
-  const url2 = 'https://iridologo.org/api/Analysis/';
-  const url4 = 'https://iridologo.org/api/Analysis/update';
-  const url5 = 'https://iridologo.org/api/AnalysisSistems/';
-  const url6 = 'https://iridologo.org/api/AnalysisBodyOrgans/';
+  const url3 = 'https://iridologyapirest.herokuapp.com/api/AnalysisPatient/';
+  const url2 = 'https://iridologyapirest.herokuapp.com/api/Analysis/';
+  const url4 = 'https://iridologyapirest.herokuapp.com/api/Analysis/update';
+  const url5 = 'https://iridologyapirest.herokuapp.com/api/AnalysisSistems/';
+  const url6 = 'https://iridologyapirest.herokuapp.com/api/AnalysisBodyOrgans/';
+  const url7 = 'https://libretranslate.de/languages';
   const [columns, setColumns] = useState([
     { field: 'id', headerName: 'ID', width: 50 },
     { field: 'Patient', headerName: 'Name Patient', width: 400 },
@@ -79,7 +80,7 @@ function AnalysisCustomer() {
     }
   }
   const EnviarDatos = async () => {
-    var url = 'https://iridologo.org/api/Analysis/add'
+    var url = 'https://iridologyapirest.herokuapp.com/api/Analysis/add'
     const data = await fetch(url, {
       method: 'post',
       headers: {'Content-Type':'application/json'},
@@ -96,14 +97,14 @@ function AnalysisCustomer() {
     if (data1['msj'] == 'Accion Realizada Correctamente'){
         const form = new FormData();
         form.append('File', file);
-        const x = await fetch('https://iridologo.org/api/File/add' , {
+        const x = await fetch('https://iridologyapirest.herokuapp.com/api/File/add' , {
             method: 'POST',
             body: form,
             }
         );
         const form2 = new FormData();
         form2.append('File', file2);
-        const x2 = await fetch('https://iridologo.org/api/File/add' , {
+        const x2 = await fetch('https://iridologyapirest.herokuapp.com/api/File/add' , {
             method: 'POST',
             body: form2,
             }
@@ -117,7 +118,7 @@ function AnalysisCustomer() {
   }
 
   const EnviarDatos2 = async () => {
-    var url = 'https://iridologo.org/api/Analysis/update'
+    var url = 'https://iridologyapirest.herokuapp.com/api/Analysis/update'
     const data = await fetch(url, {
       method: 'put',
       headers: {'Content-Type':'application/json'},

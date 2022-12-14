@@ -109,7 +109,7 @@ const UpdateOrgans = async () =>  {
   }
 }
 const EnviarDatos2 = async () => {
-  var url = 'https://iridologo.org/api/Analysis/update2'
+  var url = 'https://iridologyapirest.herokuapp.com/api/Analysis/update2'
   const data = await fetch(url, {
     method: 'put',
     headers: {'Content-Type':'application/json'},
@@ -172,7 +172,7 @@ const SaveData = async() => {
   if(false){
     swal("Incomplete Analysis", "You must complete the form!", "warning");
   }else{
-    var url = 'https://iridologo.org/api/AnalysisBodyOrgans/update'
+    var url = 'https://iridologyapirest.herokuapp.com/api/AnalysisBodyOrgans/update'
     for (let i = 0; i < DataValue.length; i++) {
       const data = await fetch(url, {
         method: 'put',
@@ -186,7 +186,7 @@ const SaveData = async() => {
         }
       );
     }
-    var url = 'https://iridologo.org/api/AnalysisSistems/update'
+    var url = 'https://iridologyapirest.herokuapp.com/api/AnalysisSistems/update'
     const data3 = await fetch(url, {
       method: 'put',
       headers: {'Content-Type':'application/json'},
@@ -195,7 +195,7 @@ const SaveData = async() => {
           }])
       }
     );
-    var url = 'https://iridologo.org/api/Analysis/update'
+    var url = 'https://iridologyapirest.herokuapp.com/api/Analysis/update'
     const data2 = await fetch(url, {
       method: 'put',
       headers: {'Content-Type':'application/json'},
@@ -233,7 +233,7 @@ const UpdateBodyOrgans = async () =>  {
 }
 const UpdateDataRange = async () =>  {
   try {
-      const data = await fetch('https://iridologo.org/api/SetupRange/');
+      const data = await fetch('https://iridologyapirest.herokuapp.com/api/SetupRange/');
       const data1 = await data.json();
       setRowData5(data1);
   } catch (error) {

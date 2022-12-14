@@ -56,7 +56,7 @@ function SetupOrgans() {
         { field: 'Lenguage', headerName: 'Lenguage', width: 150 },
       ]);
     const handleClose = () => setOpen(false);
-    const url2 = 'https://iridologo.org/api/SetupSystems/';
+    const url2 = 'https://iridologyapirest.herokuapp.com/api/SetupSystems/';
     const [rowSystems, setRowSystems] = useState();
     const [Action, setAction] = useState(0);
     const [Lista, setLista] = useState();

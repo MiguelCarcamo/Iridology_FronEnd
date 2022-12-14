@@ -75,7 +75,7 @@ function SetupSystemps() {
         }
     }
     const Create = async ()=> {
-        await fetch('https://iridologo.org/api/SetupSystems/add', {
+        await fetch('https://iridologyapirest.herokuapp.com/api/SetupSystems/add', {
             method: 'post',
             headers: {'Content-Type':'application/json'},
             body: JSON.stringify([{
@@ -96,7 +96,7 @@ function SetupSystemps() {
        });
     }
     const update = async ()=> {
-        await fetch('https://iridologo.org/api/SetupSystems/update', {
+        await fetch('https://iridologyapirest.herokuapp.com/api/SetupSystems/update', {
             method: 'put',
             headers: {'Content-Type':'application/json'},
             body: JSON.stringify([{

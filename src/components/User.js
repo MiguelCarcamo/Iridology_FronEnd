@@ -109,7 +109,7 @@ function User() {
     const UpdateDisplay = async () =>  {
         try {
             if(rowDataEdi){
-                const data = await fetch("https://iridologo.org/api/users/Display/" + rowDataEdi.id);
+                const data = await fetch("https://iridologyapirest.herokuapp.com/api/user/Display/" + rowDataEdi.id);
                 const data1 = await data.json();
                 setDisplay(data1);
             }
@@ -148,7 +148,7 @@ function User() {
     const PrepareData = async (id, value) => {
         // console.log(id.split('-')[0]);
         // console.log(value);
-        await fetch('https://iridologo.org/api/users/Display/', {
+        await fetch('https://iridologyapirest.herokuapp.com/api/user/Display/', {
             method: 'put',
             headers: {'Content-Type':'application/json'},
             body: JSON.stringify([{

@@ -41,7 +41,7 @@ function SetupSymptoms() {
         { field: 'Lenguage', headerName: 'Lenguage', width: 75 },
       ]);
     const handleClose = () => setOpen(false);
-    const url2 = 'https://iridologo.org/api/SetupBodyOrgans/';
+    const url2 = 'https://iridologyapirest.herokuapp.com/api/SetupBodyOrgans/';
     const [rowBodyOrgans, setRowBodyOrgans] = useState();
     const [Action, setAction] = useState(0);
     const [Lista, setLista] = useState();
@@ -108,7 +108,7 @@ function SetupSymptoms() {
        });
     }
     const EnviarDatos2 = async () => {
-        var url = 'https://iridologo.org/api/SetupSymptoms/delete'
+        var url = 'https://iridologyapirest.herokuapp.com/api/SetupSymptoms/delete'
         const data = await fetch(url, {
           method: 'delete',
           headers: {'Content-Type':'application/json'},
