@@ -21,7 +21,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import {CChart} from '@coreui/react-chartjs';
 
-// https://208.109.191.54/api/Analysis/
+// https://iridologo.org/api/Analysis/
 const cookies = new Cookies();
 
 function AnalysisCustomer() {
@@ -44,12 +44,11 @@ function AnalysisCustomer() {
   const [Patient , setPatient] = useState(0);
   let [CancelBtn, setCancelBtn] = useState(true);
   let [ReportBtn, setReportBtn] = useState(true);
-  const url3 = 'https://208.109.191.54/api/AnalysisPatient/';
-  const url2 = 'https://208.109.191.54/api/Analysis/';
-  const url4 = 'https://208.109.191.54/api/Analysis/update';
-  const url5 = 'https://208.109.191.54/api/AnalysisSistems/';
-  const url6 = 'https://208.109.191.54/api/AnalysisBodyOrgans/';
-  const url7 = 'https://libretranslate.de/languages';
+  const url3 = 'https://iridologo.org/api/AnalysisPatient/';
+  const url2 = 'https://iridologo.org/api/Analysis/';
+  const url4 = 'https://iridologo.org/api/Analysis/update';
+  const url5 = 'https://iridologo.org/api/AnalysisSistems/';
+  const url6 = 'https://iridologo.org/api/AnalysisBodyOrgans/';
   const [columns, setColumns] = useState([
     { field: 'id', headerName: 'ID', width: 50 },
     { field: 'Patient', headerName: 'Name Patient', width: 400 },
@@ -79,18 +78,8 @@ function AnalysisCustomer() {
         console.log(error); 
     }
   }
-  const UpdateLanguages = async () => {
-    try {
-      const data = await fetch(url7);
-      const data1 = await data.json();
-      data1.forEach((data1, index) => data1.id = index + 1);
-      setRowData5(data1);
-    } catch (error) {
-        console.log(error); 
-    }
-  }
   const EnviarDatos = async () => {
-    var url = 'https://208.109.191.54/api/Analysis/add'
+    var url = 'https://iridologo.org/api/Analysis/add'
     const data = await fetch(url, {
       method: 'post',
       headers: {'Content-Type':'application/json'},
@@ -107,14 +96,14 @@ function AnalysisCustomer() {
     if (data1['msj'] == 'Accion Realizada Correctamente'){
         const form = new FormData();
         form.append('File', file);
-        const x = await fetch('https://208.109.191.54/api/File/add' , {
+        const x = await fetch('https://iridologo.org/api/File/add' , {
             method: 'POST',
             body: form,
             }
         );
         const form2 = new FormData();
         form2.append('File', file2);
-        const x2 = await fetch('https://208.109.191.54/api/File/add' , {
+        const x2 = await fetch('https://iridologo.org/api/File/add' , {
             method: 'POST',
             body: form2,
             }
@@ -128,7 +117,7 @@ function AnalysisCustomer() {
   }
 
   const EnviarDatos2 = async () => {
-    var url = 'https://208.109.191.54/api/Analysis/update'
+    var url = 'https://iridologo.org/api/Analysis/update'
     const data = await fetch(url, {
       method: 'put',
       headers: {'Content-Type':'application/json'},
@@ -200,9 +189,6 @@ function AnalysisCustomer() {
   }, []);
   useEffect(() => {
     UpdateAnalysis();
-  }, []);
-  useEffect(() => {
-    UpdateLanguages();
   }, []);
   useEffect(() => {
     UpdateSystems();

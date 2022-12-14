@@ -38,9 +38,9 @@ function SetupOrgans() {
     const [RangeMin, setRangeMin] = useState(0);
     const [level, setLevel] = useState("High");
 
-    const url = 'https://208.109.191.54/api/SetupBodyOrgans/';
-    const url3 = 'https://208.109.191.54/api/SetupBodyOrgans/add';
-    const url4 = 'https://208.109.191.54/api/SetupBodyOrgans/update';
+    const url = 'https://iridologo.org/api/SetupBodyOrgans/';
+    const url3 = 'https://iridologo.org/api/SetupBodyOrgans/add';
+    const url4 = 'https://iridologo.org/api/SetupBodyOrgans/update';
     const [rowData, setRowData] = useState();
     const [columns, setColumns] = useState([
         { field: 'id', headerName: 'ID', width: 100 },
@@ -56,7 +56,7 @@ function SetupOrgans() {
         { field: 'Lenguage', headerName: 'Lenguage', width: 150 },
       ]);
     const handleClose = () => setOpen(false);
-    const url2 = 'https://208.109.191.54/api/SetupSystems/';
+    const url2 = 'https://iridologo.org/api/SetupSystems/';
     const [rowSystems, setRowSystems] = useState();
     const [Action, setAction] = useState(0);
     const [Lista, setLista] = useState();

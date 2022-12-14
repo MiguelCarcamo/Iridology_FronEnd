@@ -38,9 +38,9 @@ function SetupFindings() {
     const [Gender, setGender] = useState();
     const [Weight, setWeight] = useState();
 
-    const url = 'https://208.109.191.54/api/AnalysisPatient/';
-    const url2 = 'https://208.109.191.54/api/AnalysisPatient/add';
-    const url3 = 'https://208.109.191.54/api/AnalysisPatient/update';
+    const url = 'https://iridologo.org/api/AnalysisPatient/';
+    const url2 = 'https://iridologo.org/api/AnalysisPatient/add';
+    const url3 = 'https://iridologo.org/api/AnalysisPatient/update';
     const [rowData, setRowData] = useState();
     const [columns, setColumns] = useState([
         { field: 'id', headerName: 'ID', width: 50 },

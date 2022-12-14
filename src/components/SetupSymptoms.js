@@ -28,9 +28,9 @@ function SetupSymptoms() {
     const [Symptoms, setSymptoms] = useState("");
     const [RangeMax, setRangeMax] = useState(0);
     const [RangeMin, setRangeMin] = useState(0);
-    const url = 'https://208.109.191.54/api/SetupSymptoms/';
-    const url3 = 'https://208.109.191.54/api/SetupSymptoms/add';
-    const url4 = 'https://208.109.191.54/api/SetupSymptoms/update';
+    const url = 'https://iridologo.org/api/SetupSymptoms/';
+    const url3 = 'https://iridologo.org/api/SetupSymptoms/add';
+    const url4 = 'https://iridologo.org/api/SetupSymptoms/update';
     const [rowData, setRowData] = useState();
     const [columns, setColumns] = useState([
         { field: 'id', headerName: 'ID', width: 50 },
@@ -41,7 +41,7 @@ function SetupSymptoms() {
         { field: 'Lenguage', headerName: 'Lenguage', width: 75 },
       ]);
     const handleClose = () => setOpen(false);
-    const url2 = 'https://208.109.191.54/api/SetupBodyOrgans/';
+    const url2 = 'https://iridologo.org/api/SetupBodyOrgans/';
     const [rowBodyOrgans, setRowBodyOrgans] = useState();
     const [Action, setAction] = useState(0);
     const [Lista, setLista] = useState();
@@ -108,7 +108,7 @@ function SetupSymptoms() {
        });
     }
     const EnviarDatos2 = async () => {
-        var url = 'https://208.109.191.54/api/SetupSymptoms/delete'
+        var url = 'https://iridologo.org/api/SetupSymptoms/delete'
         const data = await fetch(url, {
           method: 'delete',
           headers: {'Content-Type':'application/json'},

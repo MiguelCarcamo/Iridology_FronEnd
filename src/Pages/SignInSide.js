@@ -44,7 +44,7 @@ export default function SignInSide() {
     setLoading(true);
     //swal("Clave incorrecta");
     // console.log(md5(state.Password));
-    await fetch('https://208.109.191.54/api/user/login/', {
+    await fetch('https://iridologo.org/api/users/login/', {
       method: 'post',
       headers: {'Content-Type':'application/json'},
       body: JSON.stringify([{

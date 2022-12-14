@@ -36,7 +36,7 @@ export default function ListItem() {
   };
   const UpdateData = async () =>  {
     try {
-        const data = await fetch("https://208.109.191.54/api/user/Display/" + cookies.get('IDUser'));
+        const data = await fetch("https://iridologo.org/api/users/Display/" + cookies.get('IDUser'));
         const data1 = await data.json();
         setRowData(data1);
     } catch (error) {
