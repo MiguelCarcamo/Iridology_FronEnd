@@ -101,7 +101,7 @@ function SetupFoods() {
     }
     const UpdateSystems = async () =>  {
         try {
-            const data = await fetch("https://iridologyapirest.herokuapp.com/api/SetupSystems/");
+            const data = await fetch("https://iridologo.org/api/SetupSystems/");
             const data1 = await data.json();
             setSystems(data1);
         } catch (error) {

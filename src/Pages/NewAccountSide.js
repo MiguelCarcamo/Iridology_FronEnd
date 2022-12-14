@@ -21,7 +21,7 @@ const theme = createTheme();
 
 export default function NewAccountSide() {
     const navigate = useNavigate();
-    const url3 = 'https://iridologo.org/api/user/add';
+    const url3 = 'https://iridologo.org/api/users/add';
     let [loading, setLoading] = useState(false);
     const [state , setState] = useState({
         Name : "",
