@@ -29,7 +29,7 @@ function AnalysisCustomer() {
   const [rptOrgans, setrptOrgans] = useState([]);
   const [varlabes, setVarlabes] = useState([]);
   const [varValues, setVarValues] = useState([]);
-  const [varLenguage, setVarLenguage] = useState("en");
+  const [Section, setSection] = useState("Left");
   const [rowData, setRowData] = useState([]);
   const [rowDataUpdate, setrowDataUpdate] = useState(false);
   const [rowData2, setRowData2] = useState([]);
@@ -167,7 +167,11 @@ function AnalysisCustomer() {
           const data1 = await data.json();
           setRowData3(data1);
           data1.map((x) => setVarlabes(oldArray => [...oldArray, x.Sistems]));
-          data1.map((x) => setVarValues(oldArray => [...oldArray, x.Value]));
+          if(Section === 'Left'){
+            data1.map((x) => setVarValues(oldArray => [...oldArray, x.Value_l]));
+          }else{
+            data1.map((x) => setVarValues(oldArray => [...oldArray, x.Value_r]));
+          }
         }
     } catch (error) {
         console.log(error); 
@@ -214,8 +218,12 @@ function AnalysisCustomer() {
     setVarlabes([]);
     setVarValues([]);
     rptOrgans.map((x) => setVarlabes(oldArray => [...oldArray, x.bodyorgans]));
-    rptOrgans.map((x) => setVarValues(oldArray => [...oldArray, x.bodyorgansvalue]));
-  }, [rptOrgans]);
+    if(Section === 'Left'){
+      rptOrgans.map((x) => setVarValues(oldArray => [...oldArray, x.ValueLeft]));
+    }else{
+      rptOrgans.map((x) => setVarValues(oldArray => [...oldArray, x.ValueRight]));
+    }
+  }, [rptOrgans, Section]);
 
   // Graficos Test
   return (
@@ -225,6 +233,12 @@ function AnalysisCustomer() {
       <Button disabled={CancelBtn} onClick={handleOpenUpdate} variant="contained" color="primary" startIcon={<AutoDeleteIcon />} > Cancel </Button>
       <Button disabled={ReportBtn} onClick={()=>setOpen2(true)} variant="contained" color="secondary" startIcon={<AssessmentIcon />} > Report </Button>
       <Button disabled={ReportBtn} onClick={()=>setOpen3(true)} variant="outlined" color="secondary" startIcon={<AssessmentIcon />} > quick report </Button>
+      <FormControl>
+        <Select value={Section} onChange={(e)=> setSection(e.target.value)} >
+          <MenuItem value="Left">Left</MenuItem>
+          <MenuItem value="Right">Right</MenuItem>
+        </Select>
+      </FormControl>
     </ButtonGroup>
     {rowData?
         <DataGrid 
@@ -255,24 +269,26 @@ function AnalysisCustomer() {
           </Box>
       </Grid>
     </Dialog>
-    <Dialog open={open2} onClose={handleClose2} fullWidth maxWidth="md">
+    <Dialog open={open2} onClose={handleClose2} fullWidth maxWidth="lg">
         <DialogTitle id="max-width-dialog-title">Report</DialogTitle>
           {rowData3?
             rowData3.map((option) =>
             <Accordion key={option.id}>
               <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header" >
                 <Typography variant="h5">{option.Sistems}    .</Typography>
-                <Typography variant="h6" >-  [ {option.Value} ]</Typography>
+                <Typography variant="h6" >Left-[ {Math.round(option.Value_l)} ]</Typography>
+                <Typography variant="h6" > Right-[ {Math.round(option.Value_r)} ]</Typography>
               </AccordionSummary>
               <AccordionDetails>
                 <TableContainer component={Paper}>
-                  <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                  <Table sx={{ minWidth: 650 }} aria-label="a dense table">
                     <TableHead>
                       <TableRow>
                         <TableCell>BodyOrgans</TableCell>
-                        <TableCell align="center">Value</TableCell>
-                        <TableCell align="center">Symptoms</TableCell>
-                        <TableCell align="center">Findings</TableCell>
+                        <TableCell align="left">ValueLeft</TableCell>
+                        <TableCell align="left">ValueRight</TableCell>
+                        <TableCell align="left">Symptoms</TableCell>
+                        <TableCell align="left">Findings</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
@@ -284,9 +300,10 @@ function AnalysisCustomer() {
                         sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                       >
                         <TableCell align="left">{row.bodyorgans}</TableCell>
-                        <TableCell align="left">{row.bodyorgansvalue}</TableCell>
-                        <TableCell align="left">{String(row.symptoms).replace(/[{}"]/g, '')}</TableCell>
-                        <TableCell align="left">{String(row.findings).replace(/[{}"]/g, '')}</TableCell>
+                        <TableCell align="left">{row.ValueLeft}</TableCell>
+                        <TableCell align="left">{row.ValueRight}</TableCell>
+                        <TableCell align="left">{String(row.symptoms).replace(/[{}"]/g, '') === 'null' ?'':String(row.symptoms).replace(/[{}"]/g, '')}</TableCell>
+                        <TableCell align="left">{String(row.findings).replace(/[{}"]/g, '') === 'null' ?'':String(row.findings).replace(/[{}"]/g, '')}</TableCell>
                       </TableRow>
                       :false
                     )):false}
@@ -298,25 +315,9 @@ function AnalysisCustomer() {
             )
             :false}
     </Dialog>
-    <Dialog open={open3} onClose={handleClose3} fullWidth maxWidth="md">
+    <Dialog open={open3} onClose={handleClose3} fullWidth maxWidth="lg">
       <DialogTitle id="max-width-dialog-title">
         Report
-        <FormControl sx={ {float: "right"} }>
-        <InputLabel id="demo-simple-select-label">Lenguage</InputLabel>
-        <Select
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
-          value={varLenguage}
-          label="Age"
-          onChange={e => setVarLenguage(e.target.value)}
-        >
-          {rowData3?
-            rowData5.map((option) =>
-              <MenuItem key={option.id} value={option.code}>{option.name}</MenuItem>
-              ):false
-            }
-        </Select>
-      </FormControl>
       </DialogTitle>
       <FormControl>
         <InputLabel id="demo-simple-select-label">Sistems</InputLabel>

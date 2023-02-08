@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import {ClockLoader, RingLoader , BounceLoader } from "react-spinners";
+import {ClockLoader} from "react-spinners";
 import InformationBox from './InformationBox';
-import { Grid, Container, Box, Typography, TextField, AppBar, Toolbar, IconButton, Alert, FormControl, Card, Select, MenuItem, CardMedia, CardContent, CardActions } from '@mui/material';
+import { Grid, Container, Box, Typography, TextField, AppBar, Toolbar, IconButton, Alert, Card, Select, FormControl,  MenuItem, Checkbox, FormControlLabel, CardContent, CardActions, DialogTitle, Slider  } from '@mui/material';
 import { ButtonGroup, Button  } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import CloseIcon from '@mui/icons-material/Close';
@@ -10,8 +10,6 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 
 import Dialog from '@mui/material/Dialog';
-import Paper from '@mui/material/Paper';
-import SummarizeIcon from '@mui/icons-material/Summarize';
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
@@ -23,9 +21,18 @@ import { useNavigate } from 'react-router-dom';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
+
+
+
+// Nuevo codigo
+
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+
+// FIN
+
 const cookies = new Cookies();
 
 function Analysis() {
@@ -35,6 +42,8 @@ let [AssiBtn, setAssiBtn] = useState(true);
 let [UpdBtn, setUpdBtn] = useState(true);
 let [rptNew, setrptNew] = useState(true);
 const [New, setNew] = useState(0);
+const [Section, setSection] = useState("Left");
+const [CompleteView, setCompleteView] = useState("0");
 const [DataValue, setDataValue] = useState([]);
 const [CantOrg, setCantOrg] = useState(0);
 const [CantOrgPro, setCantOrgPro] = useState(0);
@@ -67,7 +76,10 @@ const url3 = 'https://iridologo.org/api/AnalysisBodyOrgans/';
 const url6 = 'https://iridologo.org/api/AnalysisBodyOrgans/';
 
 const handleOpen = () => setOpen(true);
-const handleClose = () => setOpen(false);
+const handleClose = () => {
+  setOpen(false);
+  setDataValue([]);
+};
 const handleOpen2 = () => setOpen2(true);
 const handleClose2 = () => setOpen2(false);
 const UpdateAnalysis = async () =>  {
@@ -181,7 +193,8 @@ const SaveData = async() => {
                 "id": DataValue[i][0],
                 "bodyorgansvalue": DataValue[i][3],
                 "systems": DataValue[i][1],
-                "bodyorgans": DataValue[i][2]
+                "bodyorgans": DataValue[i][2],
+                "part": Section
             }])
         }
       );
@@ -191,25 +204,28 @@ const SaveData = async() => {
       method: 'put',
       headers: {'Content-Type':'application/json'},
       body: JSON.stringify([{
-              "id": Analysis.id
+              "id": Analysis.id,
+              "part": Section
           }])
       }
     );
-    var url = 'https://iridologo.org/api/Analysis/update'
-    const data2 = await fetch(url, {
-      method: 'put',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify([{
-              "IDAnalysis": Analysis.id,
-              "Status": '3'
-          }])
-      }
-    );
+    var url = 'https://iridologo.org/api/Analysis/update';
+    if(CompleteView == 1){
+      const data2 = await fetch(url, {
+        method: 'put',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify([{
+                "IDAnalysis": Analysis.id,
+                "Status": '3'
+            }])
+        }
+      );
+    }
+    swal("Complete", "Your file is safe :)", "success");
+    UpdateAnalysis();
   }
   setLoading(false);
   handleClose();
-  swal("Complete", "Your file is safe :)", "success");
-  UpdateAnalysis();
 }
 const UpdateAnalysisBodyOrgans = async () =>  {
   try {
@@ -290,6 +306,12 @@ useEffect(() => {
         <Button disabled={AssiBtn} onClick={UpdateAssigned} variant="contained" color="success" startIcon={<AssignmentIcon />} > Assiganed</Button>
         <Button disabled={UpdBtn} onClick={handleOpen} variant="contained" color="primary" startIcon={<RefreshIcon />} > Update</Button>
         <Button disabled={rptNew} onClick={handleOpen2} variant="contained" color="primary" startIcon={<RefreshIcon />} > Report</Button>
+        <FormControl>
+          <Select value={Section} onChange={(e)=> setSection(e.target.value)} >
+            <MenuItem value="Left">Left</MenuItem>
+            <MenuItem value="Right">Right</MenuItem>
+          </Select>
+        </FormControl>
       </ButtonGroup>
       {rowData?
         <DataGrid 
@@ -299,138 +321,157 @@ useEffect(() => {
             onRowClick={(x)=> setAnalysis(x.row)}
         />
     : false}
-      <Dialog
-        fullScreen
-        open={open}
-        onClose={handleClose}
-      >
-        <AppBar sx={{ position: 'relative' }}>
-          <Toolbar>
-            <IconButton
-              edge="start"
-              color="inherit"
-              onClick={handleClose}
-              aria-label="close"
+    <Dialog open={open} scroll='paper' fullWidth maxWidth="sm">
+      <AppBar sx={{ position: 'relative' }}>
+        <Toolbar>
+          <IconButton
+            edge="start"
+            color="inherit"
+            onClick={handleClose}
+            aria-label="close"
+          >
+            <CloseIcon />
+          </IconButton>
+          <ClockLoader color="#ffffff" loading={loading} size={50} />
+          <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
+            Analysis
+          </Typography>
+          <Button variant="contained" color="success" onClick={SaveData} endIcon={<SendIcon />}>
+            save
+          </Button>
+        </Toolbar>
+      </AppBar>
+      <Box component="form" noValidate sx={{ mt: 1 }}>
+      <FormControlLabel onChange={(e) => e.target.checked? setCompleteView("1"):setCompleteView("0")} control={<Checkbox />} label="Complete" />
+        {rowData2?
+        rowData2.map((option) =>
+        <Accordion key={option.id}>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header" >
+            <Typography>{option.Sistems}</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+          
+          {rowData3?
+            rowData3.map((option2) =>
+              (option2.Sistems == option.Sistems) ?
+                (Section == "Left" && option2.Left == true) ?
+                <Box key={option2.id} sx={{ width: '100%' }}>
+                  <Grid container spacing={2} alignItems="center">
+                    <Grid item sx={{ width: '40%' }} >
+                      {option2.bodyorgans}
+                    </Grid>
+                    <Grid item sx={{ width: '60%' }}>
+                      <Slider key={option2.id} defaultValue={option2.ValueLeft} onBlur={e => PrepareData(option2.id, option2.Sistems, option2.bodyorgans, e.target.value)} aria-label="Default" valueLabelDisplay="auto" />
+                    </Grid>
+                  </Grid>
+                </Box>
+                :(Section == "Right" && option2.Right == true) ?
+                  <Box key={option2.id} sx={{ width: '100%' }}>
+                    <Grid container spacing={2} alignItems="center">
+                      <Grid item sx={{ width: '40%' }} >
+                        {option2.bodyorgans}
+                      </Grid>
+                      <Grid item sx={{ width: '60%' }}>
+                        <Slider key={option2.id} defaultValue={option2.ValueRight} onBlur={e => PrepareData(option2.id, option2.Sistems, option2.bodyorgans, e.target.value)} aria-label="Default" valueLabelDisplay="auto" />
+                      </Grid>
+                    </Grid>
+                  </Box>
+                  :false
+              :false
+            ):false}
+          </AccordionDetails>
+        </Accordion>
+        )
+        :false}
+      </Box>
+    </Dialog>
+    <Dialog fullScreen open={open2} onClose={handleClose2} >
+      <AppBar sx={{ position: 'relative' }}>
+        <Toolbar>
+          <IconButton
+            edge="start"
+            color="inherit"
+            onClick={handleClose2}
+            aria-label="close"
+          >
+            <CloseIcon />
+          </IconButton>
+          <ClockLoader color="#ffffff" loading={loading} size={50} />
+          <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
+            Custon Report
+          </Typography>
+          <FormControl>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={ReportCuston}
+              label="Age"
+              onChange={(e)=> setReportCuston(e.target.value)}
             >
-              <CloseIcon />
-            </IconButton>
-            <ClockLoader color="#ffffff" loading={loading} size={50} />
-            <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
-              Analysis
-            </Typography>
-            <Alert severity={CantOrgPro < CantOrg?"error":"success"}>{CantOrgPro}/{CantOrg}</Alert>
-            <Button variant="contained" color="success" onClick={SaveData} endIcon={<SendIcon />}>
-              save
-            </Button>
-          </Toolbar>
-        </AppBar>
-        <Box component="form" noValidate sx={{ mt: 1 }}>
-            {rowData2?
-            rowData2.map((option) =>
-            <Accordion key={option.id}>
-              <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header" >
-                <Typography>{option.Sistems}</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-              {rowData3?
-                rowData3.map((option2) =>
-                  (option2.Sistems == option.Sistems) ?
-                    <TextField name={option2.bodyorgans} onBlur={e => PrepareData(option2.id, option2.Sistems, option2.bodyorgans, e.target.value)} key={option2.id} inputProps={{max: 100, min:1}} type="number" margin="normal" fullWidth label={option2.bodyorgans} />
-                  :false
-                ):false}
-              </AccordionDetails>
-            </Accordion>
-            )
-            :false}
-          </Box>
-      </Dialog>
-      <Dialog fullScreen open={open2} onClose={handleClose2} >
-        <AppBar sx={{ position: 'relative' }}>
-          <Toolbar>
-            <IconButton
-              edge="start"
-              color="inherit"
-              onClick={handleClose2}
-              aria-label="close"
-            >
-              <CloseIcon />
-            </IconButton>
-            <ClockLoader color="#ffffff" loading={loading} size={50} />
-            <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
-              Custon Report
-            </Typography>
-            <FormControl>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={ReportCuston}
-                label="Age"
-                onChange={(e)=> setReportCuston(e.target.value)}
-              >
-                <MenuItem value="00.00-100.00">All Info</MenuItem>
-                {rowData5?
-                rowData5.map((i)=>(
-                  <MenuItem key={i.id} value={i.rangemin + '-' + i.rangemax}>{i.setuprange}</MenuItem>
-                )):false
-                }
-              </Select>
-            </FormControl>
-          </Toolbar>
-        </AppBar>
-        <Box component="form" noValidate sx={{ mt: 1 }}>
-        <Card sx={{ maxWidth: '100%' }}>
-          <CardContent>
-            <br/>
-            <br/>
-            <Typography gutterBottom variant="h5" component="div">
-              {Analysis.Patient}
-            </Typography>
-            <Table aria-label="simple table">
-                <TableHead>
-                  <TableRow>
-                    <TableCell style={{ width: 160 }}>BodyOrgans</TableCell>
-                    <TableCell align="center">Symptoms</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                {rowAnalysisBodyOrgan?
-                rowAnalysisBodyOrgan.map((row) => (
-                  (String(row.symptoms).replace(/[{}"]/g, '') != 'null' && row.bodyorgansvalue <= RangeMax && row.bodyorgansvalue >= RangeMin) ?
-                  <TableRow
-                    key={row.id}
-                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                  >
-                    <TableCell align="left">{row.bodyorgans+"("+row.bodyorgansvalue+")"}</TableCell>
-                    <TableCell align="left">{String(row.symptoms).replace(/[{}"]/g, '')}</TableCell>
-                  </TableRow>
-                  :false
-                )):false}
-                </TableBody>
-              </Table>
-              <Table aria-label="simple table">
-                <TableHead>
-                  <TableRow>
-                    <TableCell align="left">Findings</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                {rowAnalysisBodyOrgan?
-                rowAnalysisBodyOrgan.map((row) => (
-                  (String(row.findings).replace(/[{}"]/g, '') != 'null' && row.bodyorgansvalue <= RangeMax && row.bodyorgansvalue >= RangeMin) ?
-                  <TableRow
-                    key={row.id}
-                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                  >
-                    <TableCell align="left">{String(row.findings).replace(/[{}"]/g, '')}</TableCell>
-                  </TableRow>
-                  :false
-                )):false}
+              <MenuItem value="00.00-100.00">All Info</MenuItem>
+              {rowData5?
+              rowData5.map((i)=>(
+                <MenuItem key={i.id} value={i.rangemin + '-' + i.rangemax}>{i.setuprange}</MenuItem>
+              )):false
+              }
+            </Select>
+          </FormControl>
+        </Toolbar>
+      </AppBar>
+      <Box component="form" noValidate sx={{ mt: 1 }}>
+      <Card sx={{ maxWidth: '100%' }}>
+        <CardContent>
+          <br/>
+          <br/>
+          <Typography gutterBottom variant="h5" component="div">
+            {Analysis.Patient}
+          </Typography>
+          <Table aria-label="simple table">
+              <TableHead>
+                <TableRow>
+                  <TableCell style={{ width: 160 }}>BodyOrgans</TableCell>
+                  <TableCell align="center">Symptoms</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+              {rowAnalysisBodyOrgan?
+              rowAnalysisBodyOrgan.map((row) => (
+                (String(row.symptoms).replace(/[{}"]/g, '') != 'null' && row.bodyorgansvalue <= RangeMax && row.bodyorgansvalue >= RangeMin) ?
+                <TableRow
+                  key={row.id}
+                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                >
+                  <TableCell align="left">{row.bodyorgans+"("+row.bodyorgansvalue+")"}</TableCell>
+                  <TableCell align="left">{String(row.symptoms).replace(/[{}"]/g, '')}</TableCell>
+                </TableRow>
+                :false
+              )):false}
               </TableBody>
-              </Table>
-          </CardContent>
-        </Card>
-        </Box>
-      </Dialog>
+            </Table>
+            <Table aria-label="simple table">
+              <TableHead>
+                <TableRow>
+                  <TableCell align="left">Findings</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+              {rowAnalysisBodyOrgan?
+              rowAnalysisBodyOrgan.map((row) => (
+                (String(row.findings).replace(/[{}"]/g, '') != 'null' && row.bodyorgansvalue <= RangeMax && row.bodyorgansvalue >= RangeMin) ?
+                <TableRow
+                  key={row.id}
+                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                >
+                  <TableCell align="left">{String(row.findings).replace(/[{}"]/g, '')}</TableCell>
+                </TableRow>
+                :false
+              )):false}
+            </TableBody>
+            </Table>
+        </CardContent>
+      </Card>
+      </Box>
+    </Dialog>
     </div>
   )
 }
